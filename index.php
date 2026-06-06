@@ -81,6 +81,52 @@ $mainCards = $content['main_cards'] ?? [];
 $secondaryCards = $content['secondary_cards'] ?? [];
 $notesCards = $content['notes_cards'] ?? [];
 $footer = $content['footer'] ?? [];
+
+$siteTitle = trim((string) ($site['title'] ?? 'Grendel sine Shiny-apper'));
+$siteDescription = trim((string) ($site['description'] ?? ''));
+$siteCanonical = trim((string) ($site['canonical'] ?? 'https://shiny.grendel.no/'));
+$siteOgImage = trim((string) ($site['og_image'] ?? 'https://shiny.grendel.no/og.svg'));
+$brandLine = trim((string) ($site['brand_line'] ?? 'Forside for Grendel'));
+$ga4MeasurementId = trim((string) ($site['ga4_measurement_id'] ?? ''));
+$organizationName = trim((string) ($site['organization_name'] ?? 'Grendel'));
+$organizationUrl = trim((string) ($site['organization_url'] ?? $siteCanonical));
+$organizationLogo = trim((string) ($site['organization_logo'] ?? 'https://shiny.grendel.no/grendel-g.png'));
+
+$verificationFields = [
+  'bing_site_verification' => 'msvalidate.01',
+  'google_site_verification' => 'google-site-verification',
+  'yandex_site_verification' => 'yandex-verification',
+  'baidu_site_verification' => 'baidu-site-verification',
+  'naver_site_verification' => 'naver-site-verification',
+  'facebook_domain_verification' => 'facebook-domain-verification',
+  'pinterest_domain_verification' => 'p:domain_verify',
+];
+
+$schemaGraph = [];
+
+if ($siteCanonical !== '') {
+  $schemaGraph[] = [
+    '@type' => 'Organization',
+    '@id' => $siteCanonical . '#organization',
+    'name' => $organizationName,
+    'url' => $organizationUrl,
+    'logo' => [
+      '@type' => 'ImageObject',
+      'url' => $organizationLogo,
+    ],
+  ];
+
+  $schemaGraph[] = [
+    '@type' => 'WebSite',
+    '@id' => $siteCanonical . '#website',
+    'url' => $siteCanonical,
+    'name' => $siteTitle,
+    'description' => $siteDescription,
+    'publisher' => [
+      '@id' => $siteCanonical . '#organization',
+    ],
+  ];
+}
 ?>
 <!doctype html>
 <html lang="nb">
@@ -88,19 +134,40 @@ $footer = $content['footer'] ?? [];
   <meta charset="utf-8">
   <meta name="viewport" content="width=device-width, initial-scale=1">
   <meta name="color-scheme" content="dark light">
-  <title><?= e((string) ($site['title'] ?? 'Grendel sine Shiny-apper')) ?></title>
-  <meta name="description" content="<?= e((string) ($site['description'] ?? '')) ?>">
-  <meta property="og:title" content="<?= e((string) ($site['title'] ?? 'Grendel sine Shiny-apper')) ?>">
-  <meta property="og:description" content="<?= e((string) ($site['description'] ?? '')) ?>">
+  <title><?= e($siteTitle) ?></title>
+  <meta name="description" content="<?= e($siteDescription) ?>">
+  <meta property="og:title" content="<?= e($siteTitle) ?>">
+  <meta property="og:description" content="<?= e($siteDescription) ?>">
   <meta property="og:type" content="website">
-  <meta property="og:url" content="<?= e((string) ($site['canonical'] ?? 'https://shiny.grendel.no/')) ?>">
-  <meta property="og:image" content="<?= e((string) ($site['og_image'] ?? 'https://shiny.grendel.no/og.svg')) ?>">
+  <meta property="og:url" content="<?= e($siteCanonical) ?>">
+  <meta property="og:image" content="<?= e($siteOgImage) ?>">
   <meta name="twitter:card" content="summary_large_image">
-  <meta name="twitter:title" content="<?= e((string) ($site['title'] ?? 'Grendel sine Shiny-apper')) ?>">
-  <meta name="twitter:description" content="<?= e((string) ($site['description'] ?? '')) ?>">
-  <meta name="twitter:image" content="<?= e((string) ($site['og_image'] ?? 'https://shiny.grendel.no/og.svg')) ?>">
-  <link rel="canonical" href="<?= e((string) ($site['canonical'] ?? 'https://shiny.grendel.no/')) ?>">
+  <meta name="twitter:title" content="<?= e($siteTitle) ?>">
+  <meta name="twitter:description" content="<?= e($siteDescription) ?>">
+  <meta name="twitter:image" content="<?= e($siteOgImage) ?>">
+  <link rel="canonical" href="<?= e($siteCanonical) ?>">
   <link rel="icon" href="favicon.svg">
+  <?php foreach ($verificationFields as $field => $metaName) : ?>
+    <?php if (trim((string) ($site[$field] ?? '')) !== '') : ?>
+      <meta name="<?= e($metaName) ?>" content="<?= e(trim((string) $site[$field])) ?>">
+    <?php endif; ?>
+  <?php endforeach; ?>
+  <?php if ($ga4MeasurementId !== '') : ?>
+    <script async src="https://www.googletagmanager.com/gtag/js?id=<?= e($ga4MeasurementId) ?>"></script>
+    <script>
+      window.dataLayer = window.dataLayer || [];
+      function gtag() {
+        dataLayer.push(arguments);
+      }
+      gtag('js', new Date());
+      gtag('config', '<?= e($ga4MeasurementId) ?>');
+    </script>
+  <?php endif; ?>
+  <?php if ($schemaGraph !== []) : ?>
+    <script type="application/ld+json">
+<?= json_encode(['@context' => 'https://schema.org', '@graph' => $schemaGraph], JSON_PRETTY_PRINT | JSON_UNESCAPED_SLASHES | JSON_UNESCAPED_UNICODE) ?>
+    </script>
+  <?php endif; ?>
   <style>
     :root {
       --bg: #f6eee2;
@@ -683,8 +750,8 @@ $footer = $content['footer'] ?? [];
       <a class="brand" href="#topp">
         <img class="brand-mark" src="grendel-g.png" alt="">
         <span class="brand-name">
-          <strong>Grendel</strong>
-          <span>Litt lysere turkis, fortsatt Grendel</span>
+          <strong><?= e($organizationName) ?></strong>
+          <span><?= e($brandLine) ?></span>
         </span>
       </a>
       <nav class="topnav">

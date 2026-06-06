@@ -3,7 +3,14 @@
     "title": "Grendel sine Shiny-apper",
     "description": "Et kuratert utvalg av Grendel sine Shiny-apper, tester og verktøy. En pen startside med de mest brukte sidene og noen faglige favoritter.",
     "canonical": "https://shiny.grendel.no/",
-    "og_image": "https://shiny.grendel.no/og.svg"
+    "og_image": "https://shiny.grendel.no/og.svg",
+    "brand_line": "Forside for Grendel",
+    "ga4_measurement_id": "G-M19N4XC355",
+    "organization_name": "Grendel",
+    "organization_url": "https://shiny.grendel.no/",
+    "organization_logo": "https://shiny.grendel.no/grendel-g.png",
+    "bing_site_verification": "21A55F2D174EBD13C0215D02F8C167F9",
+    "google_site_verification": "o_sMLZjQ-qy5wk9q0RhyW_DAbtLmX79aOgREc7Sci_0"
   },
   "hero": {
     "kicker": "Offisiell startside",

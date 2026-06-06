@@ -5,7 +5,7 @@ Statisk forside for `https://shiny.grendel.no/`, bygget fra en PHP-mal i deploy.
 ## Innhold
 
 - `index.php` - kilde-malen som render den offentlige `index.html`
-- `content.json` - innhold som kan oppdateres uten å røre layouten
+- `content.json` - innhold som kan oppdateres uten å røre layouten, inkludert GA4, schema.org og verifiseringskoder
 - `grendel-g.png` - den offisielle logoen
 - `favicon.svg` - ikon for nettleseren
 - `og.svg` - delingsbilde for sosiale medier
@@ -39,3 +39,5 @@ Hvis du vil at forsiden også skal oppdatere GA-tall automatisk, legg inn:
 - eventuelt `GA_START_DATE` og `GA_END_DATE` hvis du vil styre rapportperioden
 
 Da kjører workflowen `scripts/refresh_ga.php` før publisering og oppdaterer bare tallene i `content.json`.
+
+Hvis du trenger søkemotorverifisering, kan du legge inn felter i `content.json` som `bing_site_verification`, `google_site_verification` og tilsvarende støttefelter. Da blir de skrevet ut som vanlige meta-tagger i den renderte `index.html`.
