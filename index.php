@@ -95,8 +95,8 @@ $heroMeta = $content['hero_meta'] ?? [];
 $mainCards = $content['main_cards'] ?? [];
 $secondaryCards = $content['secondary_cards'] ?? [];
 $notesCards = $content['notes_cards'] ?? [];
-$heroPopularCards = array_slice($mainCards, 0, 4);
-$heroRecommendedCards = array_slice($mainCards, 4, 2);
+$heroPopularCards = array_slice($mainCards, 0, 5);
+$heroRecommendedCards = $secondaryCards;
 $footer = $content['footer'] ?? [];
 
 $siteTitle = trim((string) ($site['title'] ?? 'Grendel sine Shiny-apper'));
@@ -831,6 +831,38 @@ if ($siteCanonical !== '') {
             <?php endforeach; ?>
           </div>
         </div>
+
+        <aside class="hero-aside" aria-label="Høyrestilt oversikt">
+          <div class="hero-aside-head">
+            <span class="kicker">Raskt overblikk</span>
+            <h2>Fem som er mest brukt, og to som er gode å ha med</h2>
+            <p>Ingen tall her, bare en rolig pekepinn på hvor folk vanligvis går først.</p>
+          </div>
+
+          <div class="spotlight-group">
+            <div>
+              <h3>Mest brukt</h3>
+              <p>De fem inngangene vi oftest vil løfte frem.</p>
+            </div>
+            <div class="spotlight-list">
+              <?php foreach ($heroPopularCards as $card) {
+                renderSpotlightCard($card);
+              } ?>
+            </div>
+          </div>
+
+          <div class="spotlight-group">
+            <div>
+              <h3>Anbefalt</h3>
+              <p>To ekstra sider som fortjener plass i nærheten.</p>
+            </div>
+            <div class="spotlight-list">
+              <?php foreach ($heroRecommendedCards as $card) {
+                renderSpotlightCard($card);
+              } ?>
+            </div>
+          </div>
+        </aside>
 
       </section>
 
