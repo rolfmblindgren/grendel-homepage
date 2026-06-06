@@ -51,11 +51,24 @@ jobs:
           ssh -i ~/.ssh/id_rsa -o IdentitiesOnly=yes "${DEPLOY_USER}@${DEPLOY_HOST}" \
             "rm -f /srv/shiny-server/index.html /srv/shiny-server/index.php"
 
+      - name: Last opp sitemap og robots midlertidig
+        run: |
+          ssh -i ~/.ssh/id_rsa -o IdentitiesOnly=yes "${DEPLOY_USER}@${DEPLOY_HOST}" \
+            "mkdir -p /tmp/grendel-homepage"
+          scp -i ~/.ssh/id_rsa -o IdentitiesOnly=yes \
+            sitemap.xml robots.txt \
+            "${DEPLOY_USER}@${DEPLOY_HOST}:/tmp/grendel-homepage/"
+
       - name: Synkroniser homepage-filer
         run: |
           scp -i ~/.ssh/id_rsa -o IdentitiesOnly=yes \
-            index.html sitemap.xml robots.txt content.json favicon.svg og.svg grendel-g.png \
+            index.html content.json favicon.svg og.svg grendel-g.png \
             "${DEPLOY_USER}@${DEPLOY_HOST}:/srv/shiny-server/"
+
+      - name: Installer sitemap og robots
+        run: |
+          ssh -i ~/.ssh/id_rsa -o IdentitiesOnly=yes "${DEPLOY_USER}@${DEPLOY_HOST}" \
+            "sudo install -m 0644 /tmp/grendel-homepage/sitemap.xml /srv/shiny-server/sitemap.xml && sudo install -m 0644 /tmp/grendel-homepage/robots.txt /srv/shiny-server/robots.txt && rm -f /tmp/grendel-homepage/sitemap.xml /tmp/grendel-homepage/robots.txt"
 
       - name: Sett filrettigheter
         run: |
