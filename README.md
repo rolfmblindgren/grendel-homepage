@@ -9,6 +9,8 @@ Statisk forside for `https://shiny.grendel.no/`, bygget fra en PHP-mal i deploy.
 - `grendel-g.png` - den offisielle logoen
 - `favicon.svg` - ikon for nettleseren
 - `og.svg` - delingsbilde for sosiale medier
+- `scripts/render_sitemap.php` - bygger `sitemap.xml` fra samme innhold som forsiden
+- `robots.txt` - peker søkemotorer til sitemap
 - `.github/workflows/deploy.yml` - deploy til live server
 
 ## Lokalt
@@ -30,6 +32,7 @@ GitHub Actions-workflowen forventer:
 - `DEPLOY_USER` som repository variable, eller standardverdien `deployshiny`
 
 Workflowen rendrer `index.php` til `index.html`, kopierer `index.html`, `content.json`, `favicon.svg`, `og.svg` og `grendel-g.png` til `/srv/shiny-server/`, og fjerner den gamle `index.html` og `index.php` først.
+Den rendrer også `scripts/render_sitemap.php` til `sitemap.xml` og legger ut en `robots.txt` som peker på sitemap.
 Den kjører både ved push, manuelt og daglig, så landing-page-tallene holder seg oppdatert uten PHP i produksjon.
 
 Hvis du vil at forsiden også skal oppdatere GA-tall automatisk, legg inn:

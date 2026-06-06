@@ -146,6 +146,7 @@ if ($siteCanonical !== '') {
   <meta name="twitter:description" content="<?= e($siteDescription) ?>">
   <meta name="twitter:image" content="<?= e($siteOgImage) ?>">
   <link rel="canonical" href="<?= e($siteCanonical) ?>">
+  <link rel="sitemap" type="application/xml" title="Sitemap" href="/sitemap.xml">
   <link rel="icon" href="favicon.svg">
   <?php foreach ($verificationFields as $field => $metaName) : ?>
     <?php if (trim((string) ($site[$field] ?? '')) !== '') : ?>
