@@ -1,0 +1,31 @@
+name: Deploy homepage
+
+on:
+  push:
+    branches:
+      - main
+  workflow_dispatch:
+
+concurrency:
+  group: grendel-homepage
+  cancel-in-progress: true
+
+jobs:
+  deploy:
+    runs-on: ubuntu-latest
+
+    steps:
+      - name: Check out repo
+        uses: actions/checkout@v4
+
+      - name: Upload files to shiny server
+        uses: appleboy/scp-action@v0.1.7
+        with:
+          host: ${{ secrets.SHINY_SERVER_HOST }}
+          username: ${{ secrets.SHINY_SERVER_USER }}
+          key: ${{ secrets.SHINY_SERVER_KEY }}
+          port: ${{ secrets.SHINY_SERVER_PORT || 22 }}
+          source: "index.html,og.svg,favicon.svg"
+          target: "/srv/shiny-server/"
+          overwrite: true
+
