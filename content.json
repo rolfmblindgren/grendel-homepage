@@ -108,6 +108,20 @@
   ],
   "secondary_cards": [
     {
+      "href": "https://shiny.grendel.no/matgeek",
+      "sessions": 12,
+      "path": "/matgeek",
+      "title": "Matgeek",
+      "description": "En liten Shiny-app som gjør enkle, nyttige fysikkberegninger for kjøkkenbruk."
+    },
+    {
+      "href": "https://shiny.grendel.no/klimaskepsis",
+      "sessions": 11,
+      "path": "/klimaskepsis",
+      "title": "Klimaskepsis",
+      "description": "Viser utviklingen i arktisk havis ved årlig minimum, med glatting og forklaringer."
+    },
+    {
       "href": "https://shiny.grendel.no/kino-barn-innherred",
       "sessions": 9,
       "path": "/kino-barn-innherred",

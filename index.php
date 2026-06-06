@@ -96,7 +96,7 @@ $mainCards = $content['main_cards'] ?? [];
 $secondaryCards = $content['secondary_cards'] ?? [];
 $notesCards = $content['notes_cards'] ?? [];
 $heroPopularCards = array_slice($mainCards, 0, 5);
-$heroRecommendedCards = $secondaryCards;
+$heroRecommendedCards = array_slice($secondaryCards, 0, 2);
 $footer = $content['footer'] ?? [];
 
 $siteTitle = trim((string) ($site['title'] ?? 'Grendel sine Shiny-apper'));
