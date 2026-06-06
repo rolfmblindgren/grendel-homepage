@@ -52,15 +52,19 @@ function renderMainCard(array $card): void {
 }
 
 function renderMiniCard(array $card, bool $link = true): void {
-  $tag = $link ? 'a' : 'div';
+  $link = (bool) ($card['link'] ?? $link);
   $badge = 'Nyttig';
+  $displayPath = trim((string) ($card['path'] ?? ''));
   $targetHref = trim((string) ($card['href'] ?? ($card['path'] ?? '')));
+  $tag = $link && $targetHref !== '' ? 'a' : 'div';
   $href = $link && $targetHref !== '' ? ' href="' . e($targetHref) . '"' : '';
 
   echo '<' . $tag . ' class="mini-card"' . $href . '>';
   echo '<div class="card-top">';
   echo '<span class="badge">' . e($badge) . '</span>';
-  echo '<span class="path">' . e((string) $card['path']) . '</span>';
+  if ($displayPath !== '') {
+    echo '<span class="path">' . e($displayPath) . '</span>';
+  }
   echo '</div>';
   echo '<h3>' . e((string) $card['title']) . '</h3>';
   echo '<p>' . e((string) $card['description']) . '</p>';

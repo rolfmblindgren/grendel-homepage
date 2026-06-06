@@ -125,9 +125,9 @@
   "notes_cards": [
     {
       "sessions": 99,
-      "path": "/ikke-adhd-testen",
       "title": "Legacy inngang til ADHD-testen",
-      "description": "En eldre vei inn til samme tema, som fortsatt har sin egen lille trafikkstrøm."
+      "description": "En eldre vei inn til samme tema, som fortsatt har sin egen lille trafikkstrøm.",
+      "link": false
     },
     {
       "sessions": 44,
