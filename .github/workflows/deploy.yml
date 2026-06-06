@@ -1,31 +1,42 @@
-name: Deploy homepage
+name: deploy-homepage
 
 on:
   push:
-    branches:
-      - main
+    branches: ["main", "master"]
   workflow_dispatch:
 
-concurrency:
-  group: grendel-homepage
-  cancel-in-progress: true
+env:
+  DEPLOY_HOST: ${{ vars.DEPLOY_HOST || 'dnsgrendel.grendel.no' }}
+  DEPLOY_USER: ${{ vars.DEPLOY_USER || 'deployshiny' }}
+  DEPLOY_GROUP: ${{ vars.DEPLOY_GROUP || 'shinyapps' }}
 
 jobs:
   deploy:
     runs-on: ubuntu-latest
 
     steps:
-      - name: Check out repo
-        uses: actions/checkout@v4
+      - name: Sjekk ut kode
+        uses: actions/checkout@v6
 
-      - name: Upload files to shiny server
-        uses: appleboy/scp-action@v0.1.7
-        with:
-          host: ${{ secrets.SHINY_SERVER_HOST }}
-          username: ${{ secrets.SHINY_SERVER_USER }}
-          key: ${{ secrets.SHINY_SERVER_KEY }}
-          port: ${{ secrets.SHINY_SERVER_PORT || 22 }}
-          source: "index.html,og.svg,favicon.svg"
-          target: "/srv/shiny-server/"
-          overwrite: true
+      - name: Sjekk deploy-variabler
+        run: |
+          : "${DEPLOY_HOST:?Set repository variable DEPLOY_HOST or use the default}"
+          : "${DEPLOY_USER:?Set repository variable DEPLOY_USER or use the default}"
 
+      - name: Sett opp SSH
+        run: |
+          mkdir -p ~/.ssh
+          umask 077
+          printf '%s\n' "${{ secrets.SHINY_DEPLOY_KEY }}" | tr -d '\r' > ~/.ssh/id_rsa
+          chmod 600 ~/.ssh/id_rsa
+          ssh-keyscan -H "${DEPLOY_HOST}" >> ~/.ssh/known_hosts
+
+      - name: Synkroniser homepage-filer
+        run: |
+          rsync -avz \
+            --mkpath \
+            -e "ssh -i ~/.ssh/id_rsa -o IdentitiesOnly=yes" \
+            --chown=${DEPLOY_USER}:${DEPLOY_GROUP} \
+            --chmod=F664 \
+            index.html favicon.svg og.svg \
+            ${DEPLOY_USER}@${DEPLOY_HOST}:/srv/shiny-server/

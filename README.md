@@ -19,12 +19,11 @@ python3 -m http.server 8080
 
 ## Deploy
 
-GitHub Actions-workflowen forventer disse secrets:
+GitHub Actions-workflowen forventer:
 
-- `SHINY_SERVER_HOST`
-- `SHINY_SERVER_USER`
-- `SHINY_SERVER_KEY`
-- `SHINY_SERVER_PORT` - valgfri, standard 22
+- `SHINY_DEPLOY_KEY` som GitHub secret
+- `DEPLOY_HOST` som repository variable, eller standardverdien `dnsgrendel.grendel.no`
+- `DEPLOY_USER` som repository variable, eller standardverdien `deployshiny`
+- `DEPLOY_GROUP` som repository variable, eller standardverdien `shinyapps`
 
-Workflowen kopierer filene til `/srv/shiny-server/`.
-
+Workflowen kopierer `index.html`, `favicon.svg` og `og.svg` til `/srv/shiny-server/`.
