@@ -51,6 +51,19 @@ function renderMainCard(array $card): void {
   echo '</a>';
 }
 
+function renderSpotlightCard(array $card): void {
+  $href = trim((string) ($card['href'] ?? ''));
+  if ($href === '') {
+    return;
+  }
+
+  echo '<a class="spotlight-card" href="' . e($href) . '">';
+  echo '<span class="spotlight-path">' . e(trim((string) ($card['path'] ?? ''))) . '</span>';
+  echo '<strong>' . e((string) $card['title']) . '</strong>';
+  echo '<span class="spotlight-desc">' . e((string) $card['description']) . '</span>';
+  echo '</a>';
+}
+
 function renderMiniCard(array $card, bool $link = true): void {
   $link = (bool) ($card['link'] ?? $link);
   $badge = 'Nyttig';
@@ -82,6 +95,8 @@ $heroMeta = $content['hero_meta'] ?? [];
 $mainCards = $content['main_cards'] ?? [];
 $secondaryCards = $content['secondary_cards'] ?? [];
 $notesCards = $content['notes_cards'] ?? [];
+$heroPopularCards = array_slice($mainCards, 0, 4);
+$heroRecommendedCards = array_slice($mainCards, 4, 2);
 $footer = $content['footer'] ?? [];
 
 $siteTitle = trim((string) ($site['title'] ?? 'Grendel sine Shiny-apper'));
@@ -319,6 +334,7 @@ if ($siteCanonical !== '') {
     }
 
     .hero-copy,
+    .hero-aside,
     .section,
     .footer {
       background: var(--panel);
@@ -440,6 +456,105 @@ if ($siteCanonical !== '') {
 
     .chip strong {
       color: var(--text);
+    }
+
+    .hero-aside {
+      padding: 24px;
+      display: grid;
+      gap: 18px;
+      align-content: start;
+      position: relative;
+      overflow: hidden;
+      background:
+        linear-gradient(180deg, rgba(255, 251, 244, 0.94), rgba(238, 250, 248, 0.92)),
+        radial-gradient(circle at 20% 10%, rgba(109, 233, 220, 0.12), transparent 35%);
+    }
+
+    .hero-aside::before {
+      content: "";
+      position: absolute;
+      inset: auto -10% -18% auto;
+      width: 260px;
+      height: 260px;
+      border-radius: 50%;
+      background: radial-gradient(circle, rgba(223, 254, 249, 0.96), transparent 72%);
+      pointer-events: none;
+    }
+
+    .hero-aside-head {
+      display: grid;
+      gap: 10px;
+      position: relative;
+      z-index: 1;
+    }
+
+    .hero-aside-head h2 {
+      font-size: 1.45rem;
+      line-height: 1.05;
+      letter-spacing: -0.03em;
+      max-width: 12ch;
+    }
+
+    .hero-aside-head p {
+      color: var(--muted);
+      max-width: 34ch;
+    }
+
+    .spotlight-group {
+      display: grid;
+      gap: 10px;
+      position: relative;
+      z-index: 1;
+    }
+
+    .spotlight-group h3 {
+      font-size: 1rem;
+      letter-spacing: 0.01em;
+    }
+
+    .spotlight-group p {
+      color: var(--muted);
+      font-size: 0.95rem;
+    }
+
+    .spotlight-list {
+      display: grid;
+      gap: 10px;
+    }
+
+    .spotlight-card {
+      display: grid;
+      gap: 4px;
+      padding: 13px 14px;
+      border-radius: 18px;
+      background: rgba(255, 255, 255, 0.64);
+      border: 1px solid rgba(15, 92, 81, 0.10);
+      color: var(--text);
+      transition: transform 180ms ease, border-color 180ms ease, background 180ms ease;
+    }
+
+    .spotlight-card:hover,
+    .spotlight-card:focus-visible {
+      transform: translateY(-2px);
+      border-color: rgba(15, 92, 81, 0.28);
+      background: rgba(255, 255, 255, 0.92);
+      outline: none;
+    }
+
+    .spotlight-path {
+      color: var(--accent-2);
+      font-size: 0.84rem;
+      font-family: ui-monospace, "SFMono-Regular", Menlo, Consolas, "Liberation Mono", monospace;
+    }
+
+    .spotlight-card strong {
+      font-size: 1rem;
+      line-height: 1.18;
+    }
+
+    .spotlight-desc {
+      color: var(--muted);
+      font-size: 0.92rem;
     }
 
     .section {
@@ -660,6 +775,7 @@ if ($siteCanonical !== '') {
       }
 
       .hero-copy,
+      .hero-aside,
       .section {
         padding: 20px;
       }
