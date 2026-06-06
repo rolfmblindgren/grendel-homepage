@@ -126,6 +126,12 @@ function update_sessions(array &$items, array $counts): void {
   }
 }
 
+function is_permission_error(RuntimeException $error): bool {
+  $message = strtolower($error->getMessage());
+
+  return str_contains($message, 'http 403') || str_contains($message, 'insufficient permissions');
+}
+
 $propertyId = trim((string) getenv('GA_PROPERTY_ID'));
 $credentialsJson = trim((string) getenv('GA_SERVICE_ACCOUNT_JSON'));
 
@@ -148,59 +154,68 @@ if ($endDate === '') {
 $contentPath = dirname(__DIR__) . '/content.json';
 $content = json_decode((string) file_get_contents($contentPath), true, 512, JSON_THROW_ON_ERROR);
 $credentials = json_decode($credentialsJson, true, 512, JSON_THROW_ON_ERROR);
-$accessToken = fetch_access_token($credentials);
 
-$report = http_json('https://analyticsdata.googleapis.com/v1beta/properties/' . rawurlencode($propertyId) . ':runReport', [
-  'Authorization: Bearer ' . $accessToken,
-], [
-  'dateRanges' => [
-    [
-      'startDate' => $startDate,
-      'endDate' => $endDate,
-    ],
-  ],
-  'dimensions' => [
-    [
-      'name' => 'landingPagePlusQueryString',
-    ],
-  ],
-  'metrics' => [
-    [
-      'name' => 'sessions',
-    ],
-  ],
-  'orderBys' => [
-    [
-      'metric' => [
-        'metricName' => 'sessions',
+try {
+  $accessToken = fetch_access_token($credentials);
+
+  $report = http_json('https://analyticsdata.googleapis.com/v1beta/properties/' . rawurlencode($propertyId) . ':runReport', [
+    'Authorization: Bearer ' . $accessToken,
+  ], [
+    'dateRanges' => [
+      [
+        'startDate' => $startDate,
+        'endDate' => $endDate,
       ],
-      'desc' => true,
     ],
-  ],
-  'limit' => '1000',
-]);
+    'dimensions' => [
+      [
+        'name' => 'landingPagePlusQueryString',
+      ],
+    ],
+    'metrics' => [
+      [
+        'name' => 'sessions',
+      ],
+    ],
+    'orderBys' => [
+      [
+        'metric' => [
+          'metricName' => 'sessions',
+        ],
+        'desc' => true,
+      ],
+    ],
+    'limit' => '1000',
+  ]);
 
-$counts = [];
+  $counts = [];
 
-foreach ($report['rows'] ?? [] as $row) {
-  if (!is_array($row)) {
-    continue;
+  foreach ($report['rows'] ?? [] as $row) {
+    if (!is_array($row)) {
+      continue;
+    }
+
+    $pathValue = (string) ($row['dimensionValues'][0]['value'] ?? '/');
+    $sessionsValue = (int) ($row['metricValues'][0]['value'] ?? 0);
+    $counts[normalize_path($pathValue)] = $sessionsValue;
   }
 
-  $pathValue = (string) ($row['dimensionValues'][0]['value'] ?? '/');
-  $sessionsValue = (int) ($row['metricValues'][0]['value'] ?? 0);
-  $counts[normalize_path($pathValue)] = $sessionsValue;
+  update_sessions($content['snapshot'] ?? [], $counts);
+  update_sessions($content['main_cards'] ?? [], $counts);
+  update_sessions($content['secondary_cards'] ?? [], $counts);
+  update_sessions($content['notes_cards'] ?? [], $counts);
+
+  file_put_contents(
+    $contentPath,
+    json_encode($content, JSON_PRETTY_PRINT | JSON_UNESCAPED_SLASHES | JSON_UNESCAPED_UNICODE) . "\n"
+  );
+
+  fwrite(STDOUT, sprintf("[ga] Refreshed %d landing pages from %s to %s.\n", count($counts), $startDate, $endDate));
+} catch (RuntimeException $error) {
+  if (is_permission_error($error)) {
+    fwrite(STDERR, sprintf("[ga] Skipping GA refresh: %s\n", $error->getMessage()));
+    exit(0);
+  }
+
+  throw $error;
 }
-
-update_sessions($content['snapshot'] ?? [], $counts);
-update_sessions($content['main_cards'] ?? [], $counts);
-update_sessions($content['secondary_cards'] ?? [], $counts);
-update_sessions($content['notes_cards'] ?? [], $counts);
-
-file_put_contents(
-  $contentPath,
-  json_encode($content, JSON_PRETTY_PRINT | JSON_UNESCAPED_SLASHES | JSON_UNESCAPED_UNICODE) . "\n"
-);
-
-fwrite(STDOUT, sprintf("[ga] Refreshed %d landing pages from %s to %s.\n", count($counts), $startDate, $endDate));
-

@@ -3,6 +3,8 @@ name: deploy-homepage
 on:
   push:
     branches: ["main", "master"]
+  schedule:
+    - cron: "0 5 * * *"
   workflow_dispatch:
 
 env:
@@ -38,18 +40,21 @@ jobs:
           GA_END_DATE: ${{ vars.GA_END_DATE }}
         run: php scripts/refresh_ga.php
 
-      - name: Fjern gammel index.html
+      - name: Render landingsside
+        run: php index.php > index.html
+
+      - name: Fjern gammel index.html og index.php
         run: |
           ssh -i ~/.ssh/id_rsa -o IdentitiesOnly=yes "${DEPLOY_USER}@${DEPLOY_HOST}" \
-            "rm -f /srv/shiny-server/index.html"
+            "rm -f /srv/shiny-server/index.html /srv/shiny-server/index.php"
 
       - name: Synkroniser homepage-filer
         run: |
           scp -i ~/.ssh/id_rsa -o IdentitiesOnly=yes \
-            index.php content.json favicon.svg og.svg grendel-g.png \
+            index.html content.json favicon.svg og.svg grendel-g.png \
             "${DEPLOY_USER}@${DEPLOY_HOST}:/srv/shiny-server/"
 
       - name: Sett filrettigheter
         run: |
           ssh -i ~/.ssh/id_rsa -o IdentitiesOnly=yes "${DEPLOY_USER}@${DEPLOY_HOST}" \
-            "chmod 0644 /srv/shiny-server/index.php /srv/shiny-server/content.json /srv/shiny-server/favicon.svg /srv/shiny-server/og.svg /srv/shiny-server/grendel-g.png"
+            "chmod 0644 /srv/shiny-server/index.html /srv/shiny-server/content.json /srv/shiny-server/favicon.svg /srv/shiny-server/og.svg /srv/shiny-server/grendel-g.png"

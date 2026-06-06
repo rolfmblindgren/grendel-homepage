@@ -1,10 +1,10 @@
 # Grendel homepage
 
-PHP-drevet forside for `https://shiny.grendel.no/`.
+Statisk forside for `https://shiny.grendel.no/`, bygget fra en PHP-mal i deploy.
 
 ## Innhold
 
-- `index.php` - den offentlige forsiden
+- `index.php` - kilde-malen som render den offentlige `index.html`
 - `content.json` - innhold som kan oppdateres uten å røre layouten
 - `grendel-g.png` - den offisielle logoen
 - `favicon.svg` - ikon for nettleseren
@@ -29,7 +29,8 @@ GitHub Actions-workflowen forventer:
 - `DEPLOY_HOST` som repository variable, eller standardverdien `dnsgrendel.grendel.no`
 - `DEPLOY_USER` som repository variable, eller standardverdien `deployshiny`
 
-Workflowen kopierer `index.php`, `content.json`, `favicon.svg`, `og.svg` og `grendel-g.png` til `/srv/shiny-server/`, og fjerner den gamle `index.html` først.
+Workflowen rendrer `index.php` til `index.html`, kopierer `index.html`, `content.json`, `favicon.svg`, `og.svg` og `grendel-g.png` til `/srv/shiny-server/`, og fjerner den gamle `index.html` og `index.php` først.
+Den kjører både ved push, manuelt og daglig, så landing-page-tallene holder seg oppdatert uten PHP i produksjon.
 
 Hvis du vil at forsiden også skal oppdatere GA-tall automatisk, legg inn:
 
