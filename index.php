@@ -21,10 +21,6 @@ function e(string $value): string {
   return htmlspecialchars($value, ENT_QUOTES | ENT_SUBSTITUTE, 'UTF-8');
 }
 
-function sessionsLabel(int $sessions): string {
-  return number_format($sessions, 0, ',', ' ') . ' sessions';
-}
-
 function renderMetaList(array $items): string {
   $html = '';
 
@@ -37,6 +33,7 @@ function renderMetaList(array $items): string {
 
 function renderMainCard(array $card): void {
   $class = 'app-card';
+  $badge = !empty($card['featured']) ? 'Fremhevet' : 'Anbefalt';
 
   if (!empty($card['featured'])) {
     $class .= ' featured';
@@ -44,7 +41,7 @@ function renderMainCard(array $card): void {
 
   echo '<a class="' . e($class) . '" href="' . e((string) $card['href']) . '">';
   echo '<div class="card-top">';
-  echo '<span class="badge">' . e(sessionsLabel((int) $card['sessions'])) . '</span>';
+  echo '<span class="badge">' . e($badge) . '</span>';
   echo '<span class="path">' . e((string) $card['path']) . '</span>';
   echo '</div>';
   echo '<h3>' . e((string) $card['title']) . '</h3>';
@@ -56,11 +53,13 @@ function renderMainCard(array $card): void {
 
 function renderMiniCard(array $card, bool $link = true): void {
   $tag = $link ? 'a' : 'div';
-  $href = $link ? ' href="' . e((string) $card['href']) . '"' : '';
+  $badge = 'Nyttig';
+  $targetHref = trim((string) ($card['href'] ?? ($card['path'] ?? '')));
+  $href = $link && $targetHref !== '' ? ' href="' . e($targetHref) . '"' : '';
 
   echo '<' . $tag . ' class="mini-card"' . $href . '>';
   echo '<div class="card-top">';
-  echo '<span class="badge">' . e(sessionsLabel((int) $card['sessions'])) . '</span>';
+  echo '<span class="badge">' . e($badge) . '</span>';
   echo '<span class="path">' . e((string) $card['path']) . '</span>';
   echo '</div>';
   echo '<h3>' . e((string) $card['title']) . '</h3>';
@@ -76,7 +75,6 @@ function renderMiniCard(array $card, bool $link = true): void {
 $site = $content['site'] ?? [];
 $hero = $content['hero'] ?? [];
 $heroMeta = $content['hero_meta'] ?? [];
-$snapshot = $content['snapshot'] ?? [];
 $mainCards = $content['main_cards'] ?? [];
 $secondaryCards = $content['secondary_cards'] ?? [];
 $notesCards = $content['notes_cards'] ?? [];
@@ -317,7 +315,6 @@ if ($siteCanonical !== '') {
     }
 
     .hero-copy,
-    .hero-aside,
     .section,
     .footer {
       background: var(--panel);
@@ -439,71 +436,6 @@ if ($siteCanonical !== '') {
 
     .chip strong {
       color: var(--text);
-    }
-
-    .hero-aside {
-      padding: 24px;
-      display: grid;
-      gap: 14px;
-      align-content: start;
-      position: relative;
-      overflow: hidden;
-      background:
-        linear-gradient(180deg, rgba(255, 251, 244, 0.96), rgba(238, 250, 248, 0.92)),
-        radial-gradient(circle at 20% 10%, rgba(109, 233, 220, 0.12), transparent 35%);
-    }
-
-    .hero-aside::before {
-      content: "";
-      position: absolute;
-      inset: auto -10% -18% auto;
-      width: 260px;
-      height: 260px;
-      border-radius: 50%;
-      background: radial-gradient(circle, rgba(223, 254, 249, 0.96), transparent 72%);
-      pointer-events: none;
-    }
-
-    .aside-title {
-      display: flex;
-      align-items: center;
-      justify-content: space-between;
-      gap: 12px;
-    }
-
-    .aside-title h2 {
-      font-size: 1.2rem;
-      letter-spacing: -0.02em;
-    }
-
-    .snapshot {
-      display: grid;
-      gap: 12px;
-      padding: 16px;
-      border-radius: 24px;
-      background: var(--panel-strong);
-      border: 1px solid rgba(15, 92, 81, 0.10);
-    }
-
-    .snapshot-row {
-      display: grid;
-      grid-template-columns: auto 1fr auto;
-      gap: 10px;
-      align-items: center;
-      padding: 10px 12px;
-      border-radius: 16px;
-      background: rgba(255, 255, 255, 0.38);
-      border: 1px solid rgba(15, 92, 81, 0.08);
-    }
-
-    .snapshot-row .value {
-      font-size: 1.1rem;
-      color: var(--accent-2);
-      font-weight: 800;
-    }
-
-    .snapshot-row .label {
-      color: var(--muted);
     }
 
     .section {
@@ -724,7 +656,6 @@ if ($siteCanonical !== '') {
       }
 
       .hero-copy,
-      .hero-aside,
       .section {
         padding: 20px;
       }
@@ -781,33 +712,18 @@ if ($siteCanonical !== '') {
           </div>
         </div>
 
-        <aside class="hero-aside" aria-label="Faktaboks">
-          <div class="aside-title">
-            <h2>Hva folk faktisk bruker</h2>
-            <span class="badge">Mest besøkte innganger</span>
-          </div>
-          <div class="snapshot">
-            <?php foreach ($snapshot as $row): ?>
-              <div class="snapshot-row">
-                <span class="badge"><?= e(sessionsLabel((int) $row['sessions'])) ?></span>
-                <span class="label"><?= e((string) ($row['label'] ?? '')) ?></span>
-                <span class="value"><?= e((string) ($row['path'] ?? '')) ?></span>
-              </div>
-            <?php endforeach; ?>
-          </div>
-        </aside>
       </section>
 
       <section class="section" id="mest-brukt">
         <div class="section-head">
           <div>
-            <h2>Mest brukte apper</h2>
+            <h2>Anbefalte apper</h2>
             <p>
-              Dette er sidene som fikk mest trafikk i GA4-rapporten for landing pages.
-              De er derfor gode kandidater på forsiden.
+              Dette er sidene vi vil løfte frem akkurat nå.
+              De ligger derfor først på forsiden.
             </p>
           </div>
-          <span class="badge">Prioritert etter faktisk interesse</span>
+          <span class="badge">Kuratert utvalg</span>
         </div>
 
         <div class="app-grid">
@@ -841,23 +757,15 @@ if ($siteCanonical !== '') {
           <div>
             <h2>Små notater</h2>
             <p>
-              Jeg har også tatt med noen gamle innganger som fortsatt får trafikk, fordi
-              de forteller litt om hva folk faktisk leter etter.
+              Jeg har også tatt med noen gamle innganger som fortsatt er nyttige å finne.
             </p>
           </div>
         </div>
 
         <div class="smaller-grid">
-          <?php foreach ($notesCards as $card) : ?>
-            <div class="mini-card">
-              <div class="card-top">
-                <span class="badge"><?= e(sessionsLabel((int) $card['sessions'])) ?></span>
-                <span class="path"><?= e((string) $card['path']) ?></span>
-              </div>
-              <h3><?= e((string) $card['title']) ?></h3>
-              <p><?= e((string) $card['description']) ?></p>
-            </div>
-          <?php endforeach; ?>
+          <?php foreach ($notesCards as $card) {
+            renderMiniCard($card);
+          } ?>
         </div>
       </section>
 

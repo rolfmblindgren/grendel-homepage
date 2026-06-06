@@ -19,38 +19,16 @@
   },
   "hero_meta": [
     {
-      "strong": "GA4",
-      "text": "landing pages"
+      "strong": "Kuratert",
+      "text": "utvalg"
     },
     {
-      "strong": "1. jan",
-      "text": "til 6. jun 2026"
+      "strong": "Lett",
+      "text": "å bruke"
     },
     {
-      "strong": "6",
-      "text": "apper jeg ville løftet fram"
-    }
-  ],
-  "snapshot": [
-    {
-      "sessions": 246,
-      "label": "Dette er ikke en ADHD-test",
-      "path": "/adhd-test"
-    },
-    {
-      "sessions": 124,
-      "label": "Yrkestilpasningskalkulator",
-      "path": "/STYRK"
-    },
-    {
-      "sessions": 84,
-      "label": "ICD-10 til ICD-11",
-      "path": "/PF"
-    },
-    {
-      "sessions": 67,
-      "label": "WISC, WPPSI og WAIS",
-      "path": "/WISC"
+      "strong": "Laget for",
+      "text": "mobil og skjerm"
     }
   ],
   "main_cards": [
@@ -159,7 +137,7 @@
     }
   ],
   "footer": {
-    "note": "Forsiden er kuratert etter landing-page-data fra GA4 for perioden 1. januar til 6. juni 2026. Den er bevisst enkel å holde ved like, og den skal være lett å lese både på mobil og på stor skjerm.",
+    "note": "Forsiden er kuratert for å være enkel å bruke og enkel å holde ved like. Den skal være lett å lese både på mobil og på stor skjerm.",
     "repo": "Kildekode og deploy ligger i et eget repo med deploy.yml."
   }
 }
