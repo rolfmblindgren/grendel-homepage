@@ -8,7 +8,6 @@ on:
 env:
   DEPLOY_HOST: ${{ vars.DEPLOY_HOST || 'dnsgrendel.grendel.no' }}
   DEPLOY_USER: ${{ vars.DEPLOY_USER || 'deployshiny' }}
-  DEPLOY_GROUP: ${{ vars.DEPLOY_GROUP || 'shinyapps' }}
 
 jobs:
   deploy:
@@ -31,12 +30,26 @@ jobs:
           chmod 600 ~/.ssh/id_rsa
           ssh-keyscan -H "${DEPLOY_HOST}" >> ~/.ssh/known_hosts
 
+      - name: Oppdater GA-tall
+        env:
+          GA_PROPERTY_ID: ${{ vars.GA_PROPERTY_ID }}
+          GA_SERVICE_ACCOUNT_JSON: ${{ secrets.GA_SERVICE_ACCOUNT_JSON }}
+          GA_START_DATE: ${{ vars.GA_START_DATE }}
+          GA_END_DATE: ${{ vars.GA_END_DATE }}
+        run: php scripts/refresh_ga.php
+
+      - name: Fjern gammel index.html
+        run: |
+          ssh -i ~/.ssh/id_rsa -o IdentitiesOnly=yes "${DEPLOY_USER}@${DEPLOY_HOST}" \
+            "rm -f /srv/shiny-server/index.html"
+
       - name: Synkroniser homepage-filer
         run: |
-          rsync -avz \
-            --mkpath \
-            -e "ssh -i ~/.ssh/id_rsa -o IdentitiesOnly=yes" \
-            --chown=${DEPLOY_USER}:${DEPLOY_GROUP} \
-            --chmod=F664 \
-            index.html favicon.svg og.svg \
-            ${DEPLOY_USER}@${DEPLOY_HOST}:/srv/shiny-server/
+          scp -i ~/.ssh/id_rsa -o IdentitiesOnly=yes \
+            index.php content.json favicon.svg og.svg grendel-g.png \
+            "${DEPLOY_USER}@${DEPLOY_HOST}:/srv/shiny-server/"
+
+      - name: Sett filrettigheter
+        run: |
+          ssh -i ~/.ssh/id_rsa -o IdentitiesOnly=yes "${DEPLOY_USER}@${DEPLOY_HOST}" \
+            "chmod 0644 /srv/shiny-server/index.php /srv/shiny-server/content.json /srv/shiny-server/favicon.svg /srv/shiny-server/og.svg /srv/shiny-server/grendel-g.png"

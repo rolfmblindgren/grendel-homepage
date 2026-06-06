@@ -1,0 +1,158 @@
+{
+  "site": {
+    "title": "Grendel sine Shiny-apper",
+    "description": "Et kuratert utvalg av Grendel sine Shiny-apper, tester og verktøy. En pen startside med de mest brukte sidene og noen faglige favoritter.",
+    "canonical": "https://shiny.grendel.no/",
+    "og_image": "https://shiny.grendel.no/og.svg"
+  },
+  "hero": {
+    "kicker": "Offisiell startside",
+    "title": "Grendel sine Shiny-apper",
+    "lead": "Et kuratert utvalg av verktøy, tester og faglige sider. Noen er nyttige, noen er litt særere, og flere har faktisk folk vært inne på."
+  },
+  "hero_meta": [
+    {
+      "strong": "GA4",
+      "text": "landing pages"
+    },
+    {
+      "strong": "1. jan",
+      "text": "til 6. jun 2026"
+    },
+    {
+      "strong": "6",
+      "text": "apper jeg ville løftet fram"
+    }
+  ],
+  "snapshot": [
+    {
+      "sessions": 246,
+      "label": "Dette er ikke en ADHD-test",
+      "path": "/adhd-test"
+    },
+    {
+      "sessions": 124,
+      "label": "Yrkestilpasningskalkulator",
+      "path": "/STYRK"
+    },
+    {
+      "sessions": 84,
+      "label": "ICD-10 til ICD-11",
+      "path": "/PF"
+    },
+    {
+      "sessions": 67,
+      "label": "WISC, WPPSI og WAIS",
+      "path": "/WISC"
+    }
+  ],
+  "main_cards": [
+    {
+      "href": "https://shiny.grendel.no/adhd-test/",
+      "sessions": 246,
+      "path": "/adhd-test",
+      "title": "Dette er ikke en ADHD-test",
+      "description": "En kort selvrapportert test av fravær av oppmerksomhets- og reguleringsvansker. Ikke diagnostikk.",
+      "meta": [
+        "Selvrapport",
+        "Ikke diagnostisk",
+        "Stor interesse"
+      ],
+      "featured": true
+    },
+    {
+      "href": "https://shiny.grendel.no/STYRK",
+      "sessions": 124,
+      "path": "/STYRK",
+      "title": "Yrkestilpasningskalkulator",
+      "description": "Ser på Big Five-profiler og foreslår yrker som kan passe bedre enn folk flest tror.",
+      "meta": [
+        "Big Five",
+        "Yrker",
+        "Praktisk"
+      ]
+    },
+    {
+      "href": "https://shiny.grendel.no/PF/",
+      "sessions": 84,
+      "path": "/PF",
+      "title": "Fra ICD-10-typer til ICD-11-trekk",
+      "description": "Et pedagogisk overgangsverktøy for å forstå hvordan gamle PF-typer kan ligne trekkprofiler.",
+      "meta": [
+        "Pedagogisk",
+        "ICD-10 / ICD-11",
+        "Donasjon"
+      ]
+    },
+    {
+      "href": "https://shiny.grendel.no/WISC",
+      "sessions": 67,
+      "path": "/WISC",
+      "title": "WISC-kalkulatoren",
+      "description": "Kalkulator for prosentil, standardavvik og IQ-skårer i WPPSI, WISC og WAIS.",
+      "meta": [
+        "Prosentil",
+        "Standardavvik",
+        "IQ-skårer"
+      ]
+    },
+    {
+      "href": "https://shiny.grendel.no/coverletterwizard/",
+      "sessions": 35,
+      "path": "/coverletterwizard",
+      "title": "Søknadsbrev med faktisk innhold",
+      "description": "En modulær wizard som hjelper deg å skrive søknadsbrev med konkret innhold, ikke bare floskler.",
+      "meta": [
+        "CV + annonse",
+        "AI-støtte",
+        "Dokumentutkast"
+      ]
+    },
+    {
+      "href": "https://shiny.grendel.no/nyttekalkulator-app/",
+      "sessions": 20,
+      "path": "/nyttekalkulator-app",
+      "title": "Nyttekalkulator",
+      "description": "Beregner nytte av seleksjonsmetoder i rekruttering og gjør formelen lettere å forstå.",
+      "meta": [
+        "Seleksjon",
+        "Rekruttering",
+        "Pedagogisk"
+      ]
+    }
+  ],
+  "secondary_cards": [
+    {
+      "href": "https://shiny.grendel.no/kino-barn-innherred",
+      "sessions": 9,
+      "path": "/kino-barn-innherred",
+      "title": "Barnefilmer i Verdal og Steinkjer",
+      "description": "Oppdatert oversikt over barne- og ungdomsfilmer med dato, klokkeslett, sal og korte omtaler."
+    },
+    {
+      "href": "https://shiny.grendel.no/demens",
+      "sessions": 8,
+      "path": "/demens",
+      "title": "Kognitiv sporing",
+      "description": "Daglig egenmonitorering av kognitiv endring over tid. Ikke mot en norm, men mot deg selv."
+    }
+  ],
+  "notes_cards": [
+    {
+      "sessions": 99,
+      "path": "/ikke-adhd-testen",
+      "title": "Legacy inngang til ADHD-testen",
+      "description": "En eldre vei inn til samme tema, som fortsatt har sin egen lille trafikkstrøm."
+    },
+    {
+      "sessions": 44,
+      "path": "/wisc-testing",
+      "title": "WISC-testing",
+      "description": "Mer en faglig forklaringsside enn en full app, men tydelig interessant for et nisjepublikum."
+    }
+  ],
+  "footer": {
+    "note": "Forsiden er kuratert etter landing-page-data fra GA4 for perioden 1. januar til 6. juni 2026. Den er bevisst enkel å holde ved like, og den skal være lett å lese både på mobil og på stor skjerm.",
+    "repo": "Kildekode og deploy ligger i et eget repo med deploy.yml."
+  }
+}

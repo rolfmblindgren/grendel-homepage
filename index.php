@@ -1,36 +1,121 @@
+<?php
+declare(strict_types=1);
+
+$contentPath = __DIR__ . '/content.json';
+
+if (!is_file($contentPath)) {
+  http_response_code(500);
+  echo 'Missing content.json';
+  exit;
+}
+
+try {
+  $content = json_decode(file_get_contents($contentPath), true, 512, JSON_THROW_ON_ERROR);
+} catch (Throwable $e) {
+  http_response_code(500);
+  echo 'Could not read content.json';
+  exit;
+}
+
+function e(string $value): string {
+  return htmlspecialchars($value, ENT_QUOTES | ENT_SUBSTITUTE, 'UTF-8');
+}
+
+function sessionsLabel(int $sessions): string {
+  return number_format($sessions, 0, ',', ' ') . ' sessions';
+}
+
+function renderMetaList(array $items): string {
+  $html = '';
+
+  foreach ($items as $item) {
+    $html .= '<li>' . e((string) $item) . '</li>';
+  }
+
+  return $html;
+}
+
+function renderMainCard(array $card): void {
+  $class = 'app-card';
+
+  if (!empty($card['featured'])) {
+    $class .= ' featured';
+  }
+
+  echo '<a class="' . e($class) . '" href="' . e((string) $card['href']) . '">';
+  echo '<div class="card-top">';
+  echo '<span class="badge">' . e(sessionsLabel((int) $card['sessions'])) . '</span>';
+  echo '<span class="path">' . e((string) $card['path']) . '</span>';
+  echo '</div>';
+  echo '<h3>' . e((string) $card['title']) . '</h3>';
+  echo '<p>' . e((string) $card['description']) . '</p>';
+  echo '<ul class="meta-list">' . renderMetaList($card['meta'] ?? []) . '</ul>';
+  echo '<span class="card-link">Åpne appen</span>';
+  echo '</a>';
+}
+
+function renderMiniCard(array $card, bool $link = true): void {
+  $tag = $link ? 'a' : 'div';
+  $href = $link ? ' href="' . e((string) $card['href']) . '"' : '';
+
+  echo '<' . $tag . ' class="mini-card"' . $href . '>';
+  echo '<div class="card-top">';
+  echo '<span class="badge">' . e(sessionsLabel((int) $card['sessions'])) . '</span>';
+  echo '<span class="path">' . e((string) $card['path']) . '</span>';
+  echo '</div>';
+  echo '<h3>' . e((string) $card['title']) . '</h3>';
+  echo '<p>' . e((string) $card['description']) . '</p>';
+
+  if ($link) {
+    echo '<span class="card-link">Åpne siden</span>';
+  }
+
+  echo '</' . $tag . '>';
+}
+
+$site = $content['site'] ?? [];
+$hero = $content['hero'] ?? [];
+$heroMeta = $content['hero_meta'] ?? [];
+$snapshot = $content['snapshot'] ?? [];
+$mainCards = $content['main_cards'] ?? [];
+$secondaryCards = $content['secondary_cards'] ?? [];
+$notesCards = $content['notes_cards'] ?? [];
+$footer = $content['footer'] ?? [];
+?>
 <!doctype html>
 <html lang="nb">
 <head>
   <meta charset="utf-8">
   <meta name="viewport" content="width=device-width, initial-scale=1">
   <meta name="color-scheme" content="dark light">
-  <title>Grendel sine Shiny-apper</title>
-  <meta name="description" content="Et kuratert utvalg av Grendel sine Shiny-apper, tester og verktøy. En pen startside med de mest brukte sidene og noen faglige favoritter.">
-  <meta property="og:title" content="Grendel sine Shiny-apper">
-  <meta property="og:description" content="Et kuratert utvalg av Grendel sine Shiny-apper, tester og verktøy.">
+  <title><?= e((string) ($site['title'] ?? 'Grendel sine Shiny-apper')) ?></title>
+  <meta name="description" content="<?= e((string) ($site['description'] ?? '')) ?>">
+  <meta property="og:title" content="<?= e((string) ($site['title'] ?? 'Grendel sine Shiny-apper')) ?>">
+  <meta property="og:description" content="<?= e((string) ($site['description'] ?? '')) ?>">
   <meta property="og:type" content="website">
-  <meta property="og:url" content="https://shiny.grendel.no/">
-  <meta property="og:image" content="https://shiny.grendel.no/og.svg">
+  <meta property="og:url" content="<?= e((string) ($site['canonical'] ?? 'https://shiny.grendel.no/')) ?>">
+  <meta property="og:image" content="<?= e((string) ($site['og_image'] ?? 'https://shiny.grendel.no/og.svg')) ?>">
   <meta name="twitter:card" content="summary_large_image">
-  <meta name="twitter:title" content="Grendel sine Shiny-apper">
-  <meta name="twitter:description" content="Et kuratert utvalg av Grendel sine Shiny-apper, tester og verktøy.">
-  <meta name="twitter:image" content="https://shiny.grendel.no/og.svg">
-  <link rel="canonical" href="https://shiny.grendel.no/">
-  <link rel="icon" href="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 64 64'%3E%3Cdefs%3E%3CradialGradient id='g' cx='.25' cy='.2' r='.9'%3E%3Cstop offset='0' stop-color='%23dffef9'/%3E%3Cstop offset='.45' stop-color='%2376e9d9'/%3E%3Cstop offset='1' stop-color='%230c3b37'/%3E%3C/radialGradient%3E%3C/defs%3E%3Crect width='64' height='64' rx='18' fill='%23041716'/%3E%3Ccircle cx='32' cy='32' r='23' fill='url(%23g)'/%3E%3Cpath d='M24 40V24h15c4 0 7 3 7 8s-3 8-7 8H32' fill='none' stroke='%23041716' stroke-width='5' stroke-linecap='round' stroke-linejoin='round'/%3E%3C/svg%3E">
+  <meta name="twitter:title" content="<?= e((string) ($site['title'] ?? 'Grendel sine Shiny-apper')) ?>">
+  <meta name="twitter:description" content="<?= e((string) ($site['description'] ?? '')) ?>">
+  <meta name="twitter:image" content="<?= e((string) ($site['og_image'] ?? 'https://shiny.grendel.no/og.svg')) ?>">
+  <link rel="canonical" href="<?= e((string) ($site['canonical'] ?? 'https://shiny.grendel.no/')) ?>">
+  <link rel="icon" href="favicon.svg">
   <style>
     :root {
-      --bg: #041412;
-      --bg-2: #06211d;
-      --panel: rgba(7, 31, 27, 0.78);
-      --panel-strong: rgba(11, 48, 42, 0.96);
-      --line: rgba(140, 255, 239, 0.15);
-      --text: #f3fffd;
-      --muted: rgba(227, 255, 250, 0.76);
-      --muted-2: rgba(214, 255, 249, 0.62);
-      --accent: #76e9d9;
-      --accent-2: #b6fff4;
-      --accent-3: #4ccfb8;
-      --shadow: 0 24px 70px rgba(0, 0, 0, 0.35);
+      --bg: #f6eee2;
+      --bg-2: #e7f9f5;
+      --panel: rgba(255, 251, 244, 0.82);
+      --panel-strong: rgba(255, 255, 255, 0.94);
+      --line: rgba(15, 92, 81, 0.16);
+      --text: #0f2421;
+      --muted: rgba(15, 36, 33, 0.74);
+      --muted-2: rgba(15, 36, 33, 0.62);
+      --accent: #6de9dc;
+      --accent-2: #0f5c51;
+      --accent-3: #2aa18f;
+      --cream: #fff7ef;
+      --shadow: 0 24px 60px rgba(15, 36, 33, 0.12);
       --radius: 28px;
       --radius-sm: 20px;
       --max: 1240px;
@@ -42,6 +127,10 @@
 
     html {
       scroll-behavior: smooth;
+      background:
+        radial-gradient(circle at 15% 14%, rgba(109, 233, 220, 0.36), transparent 22%),
+        radial-gradient(circle at 85% 18%, rgba(255, 245, 233, 0.92), transparent 28%),
+        linear-gradient(180deg, #f5ecdf 0%, #eefaf8 100%);
     }
 
     body {
@@ -49,11 +138,11 @@
       min-height: 100vh;
       color: var(--text);
       background:
-        radial-gradient(circle at 18% 16%, rgba(118, 233, 217, 0.18), transparent 28%),
-        radial-gradient(circle at 82% 18%, rgba(182, 255, 244, 0.10), transparent 25%),
-        radial-gradient(circle at 70% 84%, rgba(76, 207, 184, 0.10), transparent 24%),
-        linear-gradient(180deg, #02110f 0%, #041815 40%, #04110f 100%);
-      font-family: "Avenir Next", "Avenir", "Segoe UI", "Helvetica Neue", Arial, sans-serif;
+        radial-gradient(circle at 18% 16%, rgba(109, 233, 220, 0.30), transparent 28%),
+        radial-gradient(circle at 82% 18%, rgba(255, 250, 243, 0.72), transparent 25%),
+        radial-gradient(circle at 70% 84%, rgba(42, 161, 143, 0.11), transparent 24%),
+        linear-gradient(180deg, #f7efe4 0%, #eefaf8 44%, #f8f0e6 100%);
+      font-family: "Trebuchet MS", "Avenir Next", "Avenir", "Segoe UI", "Helvetica Neue", Arial, sans-serif;
       line-height: 1.5;
     }
 
@@ -63,11 +152,11 @@
       inset: 0;
       pointer-events: none;
       background-image:
-        linear-gradient(rgba(255, 255, 255, 0.05) 1px, transparent 1px),
-        linear-gradient(90deg, rgba(255, 255, 255, 0.05) 1px, transparent 1px);
-      background-size: 68px 68px;
+        linear-gradient(rgba(15, 92, 81, 0.07) 1px, transparent 1px),
+        linear-gradient(90deg, rgba(15, 92, 81, 0.07) 1px, transparent 1px);
+      background-size: 72px 72px;
       mask-image: linear-gradient(180deg, rgba(0, 0, 0, 0.12), rgba(0, 0, 0, 0.06) 50%, transparent 100%);
-      opacity: 0.35;
+      opacity: 0.4;
     }
 
     a {
@@ -100,26 +189,15 @@
     }
 
     .brand-mark {
-      width: 44px;
-      height: 44px;
-      border-radius: 14px;
-      background:
-        radial-gradient(circle at 30% 28%, rgba(246, 255, 253, 0.96), rgba(246, 255, 253, 0.08) 30%, transparent 31%),
-        linear-gradient(145deg, rgba(118, 233, 217, 0.88), rgba(11, 48, 42, 0.98));
-      box-shadow: inset 0 0 0 1px rgba(243, 255, 253, 0.18), 0 10px 24px rgba(0, 0, 0, 0.28);
-      position: relative;
+      width: 54px;
+      height: 54px;
       flex: none;
-    }
-
-    .brand-mark::after {
-      content: "";
-      position: absolute;
-      inset: 12px;
-      border-radius: 10px;
-      border: 3px solid rgba(4, 20, 18, 0.96);
-      border-left-color: transparent;
-      border-top-color: transparent;
-      transform: rotate(-10deg);
+      padding: 5px;
+      border-radius: 16px;
+      background: linear-gradient(180deg, rgba(255, 251, 244, 0.98), rgba(223, 254, 249, 0.96));
+      border: 1px solid rgba(15, 92, 81, 0.18);
+      box-shadow: inset 0 0 0 1px rgba(255, 255, 255, 0.4), 0 12px 26px rgba(15, 36, 33, 0.12);
+      object-fit: contain;
     }
 
     .brand-name {
@@ -146,19 +224,19 @@
 
     .nav-link {
       padding: 10px 14px;
-      border: 1px solid rgba(182, 255, 244, 0.12);
+      border: 1px solid rgba(15, 92, 81, 0.14);
       border-radius: 999px;
       color: var(--muted);
-      background: rgba(6, 33, 29, 0.45);
+      background: rgba(255, 251, 244, 0.72);
       transition: transform 180ms ease, border-color 180ms ease, background 180ms ease, color 180ms ease;
     }
 
     .nav-link:hover,
     .nav-link:focus-visible {
       transform: translateY(-1px);
-      border-color: rgba(118, 233, 217, 0.45);
+      border-color: rgba(15, 92, 81, 0.42);
       color: var(--text);
-      background: rgba(8, 45, 40, 0.72);
+      background: rgba(255, 255, 255, 0.92);
       outline: none;
     }
 
@@ -194,7 +272,7 @@
       width: 360px;
       height: 360px;
       border-radius: 50%;
-      background: radial-gradient(circle, rgba(118, 233, 217, 0.18), transparent 70%);
+      background: radial-gradient(circle, rgba(109, 233, 220, 0.22), transparent 70%);
       filter: blur(4px);
       pointer-events: none;
     }
@@ -205,8 +283,8 @@
       gap: 10px;
       padding: 8px 14px;
       border-radius: 999px;
-      background: rgba(118, 233, 217, 0.09);
-      border: 1px solid rgba(118, 233, 217, 0.18);
+      background: rgba(255, 247, 239, 0.82);
+      border: 1px solid rgba(15, 92, 81, 0.16);
       color: var(--accent-2);
       font-size: 0.9rem;
       text-transform: uppercase;
@@ -249,19 +327,19 @@
       min-height: 48px;
       padding: 0 18px;
       border-radius: 999px;
-      border: 1px solid rgba(182, 255, 244, 0.16);
+      border: 1px solid rgba(15, 92, 81, 0.16);
       transition: transform 180ms ease, background 180ms ease, border-color 180ms ease, color 180ms ease;
       font-weight: 700;
     }
 
     .button.primary {
-      background: linear-gradient(135deg, rgba(118, 233, 217, 0.95), rgba(76, 207, 184, 0.72));
-      color: #02110f;
+      background: linear-gradient(135deg, rgba(223, 254, 249, 0.98), rgba(109, 233, 220, 0.92));
+      color: #0a1917;
       border-color: transparent;
     }
 
     .button.secondary {
-      background: rgba(8, 43, 39, 0.7);
+      background: rgba(255, 251, 244, 0.8);
       color: var(--text);
     }
 
@@ -269,7 +347,7 @@
     .button:focus-visible {
       transform: translateY(-2px);
       outline: none;
-      border-color: rgba(118, 233, 217, 0.45);
+      border-color: rgba(15, 92, 81, 0.48);
     }
 
     .hero-meta {
@@ -285,8 +363,8 @@
       gap: 8px;
       padding: 9px 12px;
       border-radius: 999px;
-      background: rgba(6, 30, 26, 0.72);
-      border: 1px solid rgba(118, 233, 217, 0.14);
+      background: rgba(255, 251, 244, 0.8);
+      border: 1px solid rgba(15, 92, 81, 0.12);
       color: var(--muted);
       font-size: 0.94rem;
     }
@@ -303,8 +381,8 @@
       position: relative;
       overflow: hidden;
       background:
-        linear-gradient(180deg, rgba(9, 43, 38, 0.9), rgba(6, 27, 24, 0.86)),
-        radial-gradient(circle at 20% 10%, rgba(118, 233, 217, 0.10), transparent 35%);
+        linear-gradient(180deg, rgba(255, 251, 244, 0.96), rgba(238, 250, 248, 0.92)),
+        radial-gradient(circle at 20% 10%, rgba(109, 233, 220, 0.12), transparent 35%);
     }
 
     .hero-aside::before {
@@ -314,7 +392,7 @@
       width: 260px;
       height: 260px;
       border-radius: 50%;
-      background: radial-gradient(circle, rgba(182, 255, 244, 0.15), transparent 72%);
+      background: radial-gradient(circle, rgba(223, 254, 249, 0.96), transparent 72%);
       pointer-events: none;
     }
 
@@ -336,7 +414,7 @@
       padding: 16px;
       border-radius: 24px;
       background: var(--panel-strong);
-      border: 1px solid rgba(182, 255, 244, 0.10);
+      border: 1px solid rgba(15, 92, 81, 0.10);
     }
 
     .snapshot-row {
@@ -346,8 +424,8 @@
       align-items: center;
       padding: 10px 12px;
       border-radius: 16px;
-      background: rgba(255, 255, 255, 0.02);
-      border: 1px solid rgba(182, 255, 244, 0.08);
+      background: rgba(255, 255, 255, 0.38);
+      border: 1px solid rgba(15, 92, 81, 0.08);
     }
 
     .snapshot-row .value {
@@ -376,6 +454,7 @@
     .section-head h2 {
       font-size: clamp(1.4rem, 2vw, 2rem);
       letter-spacing: -0.03em;
+      max-width: 18ch;
     }
 
     .section-head p {
@@ -398,26 +477,26 @@
       padding: 20px;
       border-radius: 24px;
       background:
-        linear-gradient(180deg, rgba(11, 48, 42, 0.94), rgba(7, 31, 27, 0.92)),
-        radial-gradient(circle at top right, rgba(118, 233, 217, 0.14), transparent 42%);
-      border: 1px solid rgba(182, 255, 244, 0.10);
-      box-shadow: inset 0 1px 0 rgba(255, 255, 255, 0.03);
+        linear-gradient(180deg, rgba(255, 251, 244, 0.96), rgba(238, 250, 248, 0.96)),
+        radial-gradient(circle at top right, rgba(109, 233, 220, 0.16), transparent 42%);
+      border: 1px solid rgba(15, 92, 81, 0.10);
+      box-shadow: inset 0 1px 0 rgba(255, 255, 255, 0.7);
       transition: transform 180ms ease, border-color 180ms ease, box-shadow 180ms ease;
     }
 
     .app-card:hover,
     .app-card:focus-visible {
       transform: translateY(-3px);
-      border-color: rgba(118, 233, 217, 0.42);
-      box-shadow: 0 20px 42px rgba(0, 0, 0, 0.26);
+      border-color: rgba(15, 92, 81, 0.34);
+      box-shadow: 0 20px 42px rgba(15, 36, 33, 0.14);
       outline: none;
     }
 
     .app-card.featured {
       grid-column: span 4;
       background:
-        linear-gradient(180deg, rgba(16, 82, 71, 0.98), rgba(7, 31, 27, 0.94)),
-        radial-gradient(circle at top right, rgba(182, 255, 244, 0.18), transparent 42%);
+        linear-gradient(180deg, rgba(247, 238, 225, 0.98), rgba(223, 254, 249, 0.96)),
+        radial-gradient(circle at top right, rgba(15, 92, 81, 0.18), transparent 42%);
     }
 
     .card-top {
@@ -435,15 +514,15 @@
       gap: 8px;
       padding: 7px 11px;
       border-radius: 999px;
-      background: rgba(118, 233, 217, 0.12);
+      background: rgba(255, 247, 239, 0.92);
       color: var(--accent-2);
-      border: 1px solid rgba(118, 233, 217, 0.14);
+      border: 1px solid rgba(15, 92, 81, 0.12);
       white-space: nowrap;
     }
 
     .path {
       font-family: ui-monospace, "SFMono-Regular", Menlo, Consolas, "Liberation Mono", monospace;
-      color: rgba(182, 255, 244, 0.72);
+      color: rgba(15, 92, 81, 0.72);
     }
 
     .app-card h3 {
@@ -470,8 +549,8 @@
     .meta-list li {
       padding: 7px 10px;
       border-radius: 999px;
-      background: rgba(255, 255, 255, 0.04);
-      border: 1px solid rgba(182, 255, 244, 0.08);
+      background: rgba(255, 255, 255, 0.58);
+      border: 1px solid rgba(15, 92, 81, 0.08);
       color: var(--muted-2);
       font-size: 0.86rem;
     }
@@ -491,7 +570,9 @@
     }
 
     .app-card:hover .card-link::after,
-    .app-card:focus-visible .card-link::after {
+    .app-card:focus-visible .card-link::after,
+    .mini-card:hover .card-link::after,
+    .mini-card:focus-visible .card-link::after {
       transform: translateX(2px) translateY(-1px);
     }
 
@@ -505,8 +586,8 @@
     .mini-card {
       padding: 20px;
       border-radius: 22px;
-      border: 1px solid rgba(182, 255, 244, 0.10);
-      background: rgba(6, 27, 24, 0.72);
+      border: 1px solid rgba(15, 92, 81, 0.10);
+      background: rgba(255, 251, 244, 0.88);
       display: grid;
       gap: 10px;
       transition: transform 180ms ease, border-color 180ms ease;
@@ -515,7 +596,7 @@
     .mini-card:hover,
     .mini-card:focus-visible {
       transform: translateY(-2px);
-      border-color: rgba(118, 233, 217, 0.38);
+      border-color: rgba(15, 92, 81, 0.32);
       outline: none;
     }
 
@@ -537,6 +618,7 @@
       gap: 14px;
       color: var(--muted-2);
       font-size: 0.94rem;
+      background: rgba(255, 251, 244, 0.88);
     }
 
     .footer a {
@@ -599,10 +681,10 @@
   <div class="shell">
     <header class="topbar" aria-label="Toppnavigasjon">
       <a class="brand" href="#topp">
-        <span class="brand-mark" aria-hidden="true"></span>
+        <img class="brand-mark" src="grendel-g.png" alt="">
         <span class="brand-name">
           <strong>Grendel</strong>
-          <span>Smaragd og turkis, selvfølgelig</span>
+          <span>Litt lysere turkis, fortsatt Grendel</span>
         </span>
       </a>
       <nav class="topnav">
@@ -615,20 +697,19 @@
     <main id="topp">
       <section class="hero" aria-label="Forside">
         <div class="hero-copy">
-          <span class="kicker">Offisiell startside</span>
-          <h1>Grendel sine Shiny-apper</h1>
+          <span class="kicker"><?= e((string) ($hero['kicker'] ?? 'Offisiell startside')) ?></span>
+          <h1><?= e((string) ($hero['title'] ?? 'Grendel sine Shiny-apper')) ?></h1>
           <p class="lead">
-            Et kuratert utvalg av verktøy, tester og faglige sider. Noen er nyttige,
-            noen er litt særere, og flere har faktisk folk vært inne på.
+            <?= e((string) ($hero['lead'] ?? '')) ?>
           </p>
           <div class="hero-actions">
             <a class="button primary" href="#mest-brukt">Se utvalget</a>
             <a class="button secondary" href="#andre-prosjekter">Se flere sider</a>
           </div>
           <div class="hero-meta" aria-label="Rask status">
-            <span class="chip"><strong>GA4</strong> landing pages</span>
-            <span class="chip"><strong>1. jan</strong> til <strong>6. jun 2026</strong></span>
-            <span class="chip"><strong>6</strong> apper jeg ville løftet fram</span>
+            <?php foreach ($heroMeta as $chip): ?>
+              <span class="chip"><strong><?= e((string) ($chip['strong'] ?? '')) ?></strong> <?= e((string) ($chip['text'] ?? '')) ?></span>
+            <?php endforeach; ?>
           </div>
         </div>
 
@@ -638,26 +719,13 @@
             <span class="badge">Mest besøkte innganger</span>
           </div>
           <div class="snapshot">
-            <div class="snapshot-row">
-              <span class="badge">246</span>
-              <span class="label">Dette er ikke en ADHD-test</span>
-              <span class="value">/adhd-test</span>
-            </div>
-            <div class="snapshot-row">
-              <span class="badge">124</span>
-              <span class="label">Yrkestilpasningskalkulator</span>
-              <span class="value">/STYRK</span>
-            </div>
-            <div class="snapshot-row">
-              <span class="badge">84</span>
-              <span class="label">ICD-10 til ICD-11</span>
-              <span class="value">/PF</span>
-            </div>
-            <div class="snapshot-row">
-              <span class="badge">67</span>
-              <span class="label">WISC, WPPSI og WAIS</span>
-              <span class="value">/WISC</span>
-            </div>
+            <?php foreach ($snapshot as $row): ?>
+              <div class="snapshot-row">
+                <span class="badge"><?= e(sessionsLabel((int) $row['sessions'])) ?></span>
+                <span class="label"><?= e((string) ($row['label'] ?? '')) ?></span>
+                <span class="value"><?= e((string) ($row['path'] ?? '')) ?></span>
+              </div>
+            <?php endforeach; ?>
           </div>
         </aside>
       </section>
@@ -675,95 +743,9 @@
         </div>
 
         <div class="app-grid">
-          <a class="app-card featured" href="https://shiny.grendel.no/adhd-test/">
-            <div class="card-top">
-              <span class="badge">246 sessions</span>
-              <span class="path">/adhd-test</span>
-            </div>
-            <h3>Dette er ikke en ADHD-test</h3>
-            <p>En kort selvrapportert test av fravær av oppmerksomhets- og reguleringsvansker. Ikke diagnostikk.</p>
-            <ul class="meta-list">
-              <li>Selvrapport</li>
-              <li>Ikke diagnostisk</li>
-              <li>Stor interesse</li>
-            </ul>
-            <span class="card-link">Åpne appen</span>
-          </a>
-
-          <a class="app-card" href="https://shiny.grendel.no/STYRK">
-            <div class="card-top">
-              <span class="badge">124 sessions</span>
-              <span class="path">/STYRK</span>
-            </div>
-            <h3>Yrkestilpasningskalkulator</h3>
-            <p>Ser på Big Five-profiler og foreslår yrker som kan passe bedre enn folk flest tror.</p>
-            <ul class="meta-list">
-              <li>Big Five</li>
-              <li>Yrker</li>
-              <li>Praktisk</li>
-            </ul>
-            <span class="card-link">Åpne appen</span>
-          </a>
-
-          <a class="app-card" href="https://shiny.grendel.no/PF/">
-            <div class="card-top">
-              <span class="badge">84 sessions</span>
-              <span class="path">/PF</span>
-            </div>
-            <h3>Fra ICD-10-typer til ICD-11-trekk</h3>
-            <p>Et pedagogisk overgangsverktøy for å forstå hvordan gamle PF-typer kan ligne trekkprofiler.</p>
-            <ul class="meta-list">
-              <li>Pedagogisk</li>
-              <li>ICD-10 / ICD-11</li>
-              <li>Donasjon</li>
-            </ul>
-            <span class="card-link">Åpne appen</span>
-          </a>
-
-          <a class="app-card" href="https://shiny.grendel.no/WISC">
-            <div class="card-top">
-              <span class="badge">67 sessions</span>
-              <span class="path">/WISC</span>
-            </div>
-            <h3>WISC-kalkulatoren</h3>
-            <p>Kalkulator for prosentil, standardavvik og IQ-skårer i WPPSI, WISC og WAIS.</p>
-            <ul class="meta-list">
-              <li>Prosentil</li>
-              <li>Standardavvik</li>
-              <li>IQ-skårer</li>
-            </ul>
-            <span class="card-link">Åpne appen</span>
-          </a>
-
-          <a class="app-card" href="https://shiny.grendel.no/coverletterwizard/">
-            <div class="card-top">
-              <span class="badge">35 sessions</span>
-              <span class="path">/coverletterwizard</span>
-            </div>
-            <h3>Søknadsbrev med faktisk innhold</h3>
-            <p>En modulær wizard som hjelper deg å skrive søknadsbrev med konkret innhold, ikke bare floskler.</p>
-            <ul class="meta-list">
-              <li>CV + annonse</li>
-              <li>AI-støtte</li>
-              <li>Dokumentutkast</li>
-            </ul>
-            <span class="card-link">Åpne appen</span>
-          </a>
-
-          <a class="app-card" href="https://shiny.grendel.no/nyttekalkulator-app/">
-            <div class="card-top">
-              <span class="badge">20 sessions</span>
-              <span class="path">/nyttekalkulator-app</span>
-            </div>
-            <h3>Nyttekalkulator</h3>
-            <p>Beregner nytte av seleksjonsmetoder i rekruttering og gjør formelen lettere å forstå.</p>
-            <ul class="meta-list">
-              <li>Seleksjon</li>
-              <li>Rekruttering</li>
-              <li>Pedagogisk</li>
-            </ul>
-            <span class="card-link">Åpne appen</span>
-          </a>
+          <?php foreach ($mainCards as $card) {
+            renderMainCard($card);
+          } ?>
         </div>
       </section>
 
@@ -780,25 +762,9 @@
         </div>
 
         <div class="smaller-grid">
-          <a class="mini-card" href="https://shiny.grendel.no/kino-barn-innherred">
-            <div class="card-top">
-              <span class="badge">9 sessions</span>
-              <span class="path">/kino-barn-innherred</span>
-            </div>
-            <h3>Barnefilmer i Verdal og Steinkjer</h3>
-            <p>Oppdatert oversikt over barne- og ungdomsfilmer med dato, klokkeslett, sal og korte omtaler.</p>
-            <span class="card-link">Åpne siden</span>
-          </a>
-
-          <a class="mini-card" href="https://shiny.grendel.no/demens">
-            <div class="card-top">
-              <span class="badge">8 sessions</span>
-              <span class="path">/demens</span>
-            </div>
-            <h3>Kognitiv sporing</h3>
-            <p>Daglig egenmonitorering av kognitiv endring over tid. Ikke mot en norm, men mot deg selv.</p>
-            <span class="card-link">Åpne siden</span>
-          </a>
+          <?php foreach ($secondaryCards as $card) {
+            renderMiniCard($card);
+          } ?>
         </div>
       </section>
 
@@ -814,38 +780,28 @@
         </div>
 
         <div class="smaller-grid">
-          <div class="mini-card">
-            <div class="card-top">
-              <span class="badge">99 sessions</span>
-              <span class="path">/ikke-adhd-testen</span>
+          <?php foreach ($notesCards as $card) : ?>
+            <div class="mini-card">
+              <div class="card-top">
+                <span class="badge"><?= e(sessionsLabel((int) $card['sessions'])) ?></span>
+                <span class="path"><?= e((string) $card['path']) ?></span>
+              </div>
+              <h3><?= e((string) $card['title']) ?></h3>
+              <p><?= e((string) $card['description']) ?></p>
             </div>
-            <h3>Legacy inngang til ADHD-testen</h3>
-            <p>En eldre vei inn til samme tema, som fortsatt har sin egen lille trafikkstrøm.</p>
-          </div>
-
-          <div class="mini-card">
-            <div class="card-top">
-              <span class="badge">44 sessions</span>
-              <span class="path">/wisc-testing</span>
-            </div>
-            <h3>WISC-testing</h3>
-            <p>Mer en faglig forklaringsside enn en full app, men tydelig interessant for et nisjepublikum.</p>
-          </div>
+          <?php endforeach; ?>
         </div>
       </section>
 
       <footer class="footer">
         <p class="fineprint">
-          Forsiden er kuratert etter landing-page-data fra GA4 for perioden 1. januar til 6. juni 2026.
-          Den er bevisst enkel å holde ved like, og den skal være lett å lese både på mobil og på stor skjerm.
+          <?= e((string) ($footer['note'] ?? '')) ?>
         </p>
         <p>
-          Kildekode og deploy ligger i et eget repo med
-          <a href=".github/workflows/deploy.yml">deploy.yml</a>.
+          <?= e((string) ($footer['repo'] ?? '')) ?>
         </p>
       </footer>
     </main>
   </div>
 </body>
 </html>
-
