@@ -108,6 +108,13 @@
   ],
   "secondary_cards": [
     {
+      "href": "https://cran.r-project.org/package=shinyseo",
+      "sessions": 0,
+      "path": "shinyseo",
+      "title": "shinyseo",
+      "description": "En liten R-pakke for SEO-arbeid, mest for spesielt interesserte. Lenken går til CRAN."
+    },
+    {
       "href": "https://shiny.grendel.no/matgeek",
       "sessions": 12,
       "path": "/matgeek",
