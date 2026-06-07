@@ -44,3 +44,5 @@ Hvis du vil at forsiden også skal oppdatere GA-tall automatisk, legg inn:
 Da kjører workflowen `scripts/refresh_ga.php` før publisering og oppdaterer bare tallene i `content.json`.
 
 Hvis du trenger søkemotorverifisering, kan du legge inn felter i `content.json` som `bing_site_verification`, `google_site_verification` og tilsvarende støttefelter. Da blir de skrevet ut som vanlige meta-tagger i den renderte `index.html`.
+
+Som en liten huskelapp: denne forsiden er bare en enkel inngang til Grendel sine Shiny-sider. Kildekode og deploy-oppsett er samlet her i repoet, med arbeidsflyten definert i `.github/workflows/deploy.yml`.

@@ -4,7 +4,7 @@
     "description": "Et kuratert utvalg av Grendel sine Shiny-apper, tester og verktøy. En pen startside med de mest brukte sidene og noen faglige favoritter.",
     "canonical": "https://shiny.grendel.no/",
     "og_image": "https://shiny.grendel.no/og.svg",
-    "brand_line": "Forside for Grendel",
+    "brand_line": "Grendel programvareverksted",
     "ga4_measurement_id": "G-M19N4XC355",
     "organization_name": "Grendel",
     "organization_url": "https://shiny.grendel.no/",
@@ -156,9 +156,5 @@
       "title": "WISC-testing",
       "description": "Mer en faglig forklaringsside enn en full app, men tydelig interessant for et nisjepublikum."
     }
-  ],
-  "footer": {
-    "note": "Forsiden er kuratert for å være enkel å bruke og enkel å holde ved like. Den skal være lett å lese både på mobil og på stor skjerm.",
-    "repo": "Kildekode og deploy ligger i et eget repo med deploy.yml."
-  }
+  ]
 }

@@ -97,13 +97,12 @@ $secondaryCards = $content['secondary_cards'] ?? [];
 $notesCards = $content['notes_cards'] ?? [];
 $heroPopularCards = array_slice($mainCards, 0, 5);
 $heroRecommendedCards = array_slice($secondaryCards, 0, 2);
-$footer = $content['footer'] ?? [];
 
 $siteTitle = trim((string) ($site['title'] ?? 'Grendel sine Shiny-apper'));
 $siteDescription = trim((string) ($site['description'] ?? ''));
 $siteCanonical = trim((string) ($site['canonical'] ?? 'https://shiny.grendel.no/'));
 $siteOgImage = trim((string) ($site['og_image'] ?? 'https://shiny.grendel.no/og.svg'));
-$brandLine = trim((string) ($site['brand_line'] ?? 'Forside for Grendel'));
+$brandLine = trim((string) ($site['brand_line'] ?? 'Grendel programvareverksted'));
 $ga4MeasurementId = trim((string) ($site['ga4_measurement_id'] ?? ''));
 $organizationName = trim((string) ($site['organization_name'] ?? 'Grendel'));
 $organizationUrl = trim((string) ($site['organization_url'] ?? $siteCanonical));
@@ -335,8 +334,7 @@ if ($siteCanonical !== '') {
 
     .hero-copy,
     .hero-aside,
-    .section,
-    .footer {
+    .section {
       background: var(--panel);
       border: 1px solid var(--line);
       border-radius: var(--radius);
@@ -728,26 +726,6 @@ if ($siteCanonical !== '') {
       color: var(--muted);
     }
 
-    .footer {
-      margin-top: 18px;
-      padding: 18px 22px;
-      display: flex;
-      flex-wrap: wrap;
-      justify-content: space-between;
-      gap: 14px;
-      color: var(--muted-2);
-      font-size: 0.94rem;
-      background: rgba(255, 251, 244, 0.88);
-    }
-
-    .footer a {
-      color: var(--accent-2);
-    }
-
-    .fineprint {
-      max-width: 70ch;
-    }
-
     @media (max-width: 1060px) {
       .hero {
         grid-template-columns: 1fr;
@@ -920,15 +898,6 @@ if ($siteCanonical !== '') {
           } ?>
         </div>
       </section>
-
-      <footer class="footer">
-        <p class="fineprint">
-          <?= e((string) ($footer['note'] ?? '')) ?>
-        </p>
-        <p>
-          <?= e((string) ($footer['repo'] ?? '')) ?>
-        </p>
-      </footer>
     </main>
   </div>
 </body>
