@@ -370,21 +370,16 @@ if ($siteCanonical !== '') {
 
     .hero-art {
       margin: 0;
-      width: min(100%, 62ch);
+      width: min(100%, 30rem);
       justify-self: start;
       border-radius: 28px;
-      overflow: hidden;
-      background: linear-gradient(180deg, rgba(255, 255, 255, 0.64), rgba(223, 254, 249, 0.42));
-      border: 1px solid rgba(15, 92, 81, 0.14);
-      box-shadow: 0 24px 60px rgba(15, 36, 33, 0.16);
     }
 
     .hero-art img {
       display: block;
       width: 100%;
       height: auto;
-      aspect-ratio: 4 / 3;
-      object-fit: cover;
+      object-fit: contain;
     }
 
     .hero-copy-body {
@@ -855,7 +850,7 @@ if ($siteCanonical !== '') {
             </div>
 
             <figure class="hero-art">
-              <img src="hero-illustration.png" alt="Illustrasjon av Grendel sitt programvareverksted" loading="eager" decoding="async">
+              <img src="grendel.png" alt="Illustrasjon av Grendel sitt programvareverksted" loading="eager" decoding="async">
             </figure>
           </div>
         </div>
