@@ -54,10 +54,10 @@ jobs:
       - name: Synkroniser homepage-filer
         run: |
           scp -i ~/.ssh/id_rsa -o IdentitiesOnly=yes \
-            index.html sitemap.xml robots.txt content.json favicon.svg og.svg grendel-g.png \
+            index.html sitemap.xml robots.txt content.json favicon.svg og.svg grendel-g.png hero-illustration.png \
             "${DEPLOY_USER}@${DEPLOY_HOST}:/srv/shiny-server/"
 
       - name: Sett filrettigheter
         run: |
           ssh -i ~/.ssh/id_rsa -o IdentitiesOnly=yes "${DEPLOY_USER}@${DEPLOY_HOST}" \
-            "chmod 0644 /srv/shiny-server/index.html /srv/shiny-server/sitemap.xml /srv/shiny-server/robots.txt /srv/shiny-server/content.json /srv/shiny-server/favicon.svg /srv/shiny-server/og.svg /srv/shiny-server/grendel-g.png"
+            "chmod 0644 /srv/shiny-server/index.html /srv/shiny-server/sitemap.xml /srv/shiny-server/robots.txt /srv/shiny-server/content.json /srv/shiny-server/favicon.svg /srv/shiny-server/og.svg /srv/shiny-server/grendel-g.png /srv/shiny-server/hero-illustration.png"
