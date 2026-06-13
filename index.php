@@ -362,16 +362,15 @@ if ($siteCanonical !== '') {
 
     .hero-copy-layout {
       display: grid;
-      grid-template-columns: minmax(250px, 0.9fr) minmax(0, 1.1fr);
-      gap: 28px;
-      align-items: start;
+      grid-template-columns: 1fr;
+      gap: 22px;
       position: relative;
       z-index: 1;
     }
 
     .hero-art {
       margin: 0;
-      width: min(100%, 420px);
+      width: min(100%, 62ch);
       justify-self: start;
       border-radius: 28px;
       overflow: hidden;
@@ -838,10 +837,6 @@ if ($siteCanonical !== '') {
       <section class="hero" aria-label="Forside">
         <div class="hero-copy">
           <div class="hero-copy-layout">
-            <figure class="hero-art">
-              <img src="hero-illustration.svg" alt="Illustrasjon av Grendel sitt programvareverksted" loading="eager" decoding="async">
-            </figure>
-
             <div class="hero-copy-body">
               <span class="kicker"><?= e((string) ($hero['kicker'] ?? 'Offisiell startside')) ?></span>
               <h1><?= e((string) ($hero['title'] ?? 'Grendel sine Shiny-apper')) ?></h1>
@@ -858,6 +853,10 @@ if ($siteCanonical !== '') {
                 <?php endforeach; ?>
               </div>
             </div>
+
+            <figure class="hero-art">
+              <img src="hero-illustration.png" alt="Illustrasjon av Grendel sitt programvareverksted" loading="eager" decoding="async">
+            </figure>
           </div>
         </div>
 

@@ -104,6 +104,18 @@
         "Rekruttering",
         "Pedagogisk"
       ]
+    },
+    {
+      "href": "https://shiny.grendel.no/autisme-test/",
+      "sessions": 0,
+      "path": "/autisme-test",
+      "title": "Autisme-testen",
+      "description": "En kort selvrapportert test for trekk og erfaringer som kan være relevante. Ikke diagnostikk.",
+      "meta": [
+        "Selvrapport",
+        "Ikke diagnostisk",
+        "Forsiktig brukt"
+      ]
     }
   ],
   "secondary_cards": [
