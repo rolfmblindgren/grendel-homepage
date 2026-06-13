@@ -360,6 +360,41 @@ if ($siteCanonical !== '') {
       pointer-events: none;
     }
 
+    .hero-copy-layout {
+      display: grid;
+      grid-template-columns: minmax(250px, 0.9fr) minmax(0, 1.1fr);
+      gap: 28px;
+      align-items: start;
+      position: relative;
+      z-index: 1;
+    }
+
+    .hero-art {
+      margin: 0;
+      width: min(100%, 420px);
+      justify-self: start;
+      border-radius: 28px;
+      overflow: hidden;
+      background: linear-gradient(180deg, rgba(255, 255, 255, 0.64), rgba(223, 254, 249, 0.42));
+      border: 1px solid rgba(15, 92, 81, 0.14);
+      box-shadow: 0 24px 60px rgba(15, 36, 33, 0.16);
+    }
+
+    .hero-art img {
+      display: block;
+      width: 100%;
+      height: auto;
+      aspect-ratio: 4 / 3;
+      object-fit: cover;
+    }
+
+    .hero-copy-body {
+      position: relative;
+      z-index: 1;
+      display: grid;
+      align-content: start;
+    }
+
     .kicker {
       display: inline-flex;
       align-items: center;
@@ -758,6 +793,14 @@ if ($siteCanonical !== '') {
         padding: 20px;
       }
 
+      .hero-copy-layout {
+        grid-template-columns: 1fr;
+      }
+
+      .hero-art {
+        width: 100%;
+      }
+
       .section-head {
         flex-direction: column;
         align-items: flex-start;
@@ -794,19 +837,27 @@ if ($siteCanonical !== '') {
     <main id="topp">
       <section class="hero" aria-label="Forside">
         <div class="hero-copy">
-          <span class="kicker"><?= e((string) ($hero['kicker'] ?? 'Offisiell startside')) ?></span>
-          <h1><?= e((string) ($hero['title'] ?? 'Grendel sine Shiny-apper')) ?></h1>
-          <p class="lead">
-            <?= e((string) ($hero['lead'] ?? '')) ?>
-          </p>
-          <div class="hero-actions">
-            <a class="button primary" href="#mest-brukt">Se utvalget</a>
-            <a class="button secondary" href="#andre-prosjekter">Se flere sider</a>
-          </div>
-          <div class="hero-meta" aria-label="Rask status">
-            <?php foreach ($heroMeta as $chip): ?>
-              <span class="chip"><strong><?= e((string) ($chip['strong'] ?? '')) ?></strong> <?= e((string) ($chip['text'] ?? '')) ?></span>
-            <?php endforeach; ?>
+          <div class="hero-copy-layout">
+            <figure class="hero-art">
+              <img src="hero-illustration.svg" alt="Illustrasjon av Grendel sitt programvareverksted" loading="eager" decoding="async">
+            </figure>
+
+            <div class="hero-copy-body">
+              <span class="kicker"><?= e((string) ($hero['kicker'] ?? 'Offisiell startside')) ?></span>
+              <h1><?= e((string) ($hero['title'] ?? 'Grendel sine Shiny-apper')) ?></h1>
+              <p class="lead">
+                <?= e((string) ($hero['lead'] ?? '')) ?>
+              </p>
+              <div class="hero-actions">
+                <a class="button primary" href="#mest-brukt">Se utvalget</a>
+                <a class="button secondary" href="#andre-prosjekter">Se flere sider</a>
+              </div>
+              <div class="hero-meta" aria-label="Rask status">
+                <?php foreach ($heroMeta as $chip): ?>
+                  <span class="chip"><strong><?= e((string) ($chip['strong'] ?? '')) ?></strong> <?= e((string) ($chip['text'] ?? '')) ?></span>
+                <?php endforeach; ?>
+              </div>
+            </div>
           </div>
         </div>
 
