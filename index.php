@@ -107,6 +107,7 @@ $uiByLanguage = [
     'nav_projects' => 'Andre prosjekter',
     'nav_notes' => 'Notater',
     'language_label' => 'English',
+    'language_flag' => '🇬🇧',
     'hero_aria' => 'Forside',
     'hero_primary' => 'Se utvalget',
     'hero_secondary' => 'Se flere sider',
@@ -140,6 +141,7 @@ $uiByLanguage = [
     'nav_projects' => 'Other projects',
     'nav_notes' => 'Notes',
     'language_label' => 'Norsk',
+    'language_flag' => '🇳🇴',
     'hero_aria' => 'Home page',
     'hero_primary' => 'See the selection',
     'hero_secondary' => 'See more pages',
@@ -246,6 +248,23 @@ if ($siteCanonical !== '') {
   <link rel="alternate" hreflang="x-default" href="<?= e($siteRoot) ?>">
   <link rel="sitemap" type="application/xml" title="Sitemap" href="/sitemap.xml">
   <link rel="icon" href="/favicon.svg">
+  <?php if ($language === 'nb') : ?>
+    <script>
+      (() => {
+        try {
+          const savedLanguage = localStorage.getItem('grendel-language');
+          const primaryLanguage = (navigator.languages?.[0] || navigator.language || '').toLowerCase();
+          const onFrontPage = location.pathname === '/' || location.pathname === '/index.html';
+
+          if (onFrontPage && (savedLanguage === 'en' || (!savedLanguage && primaryLanguage.startsWith('en')))) {
+            location.replace('/en/');
+          }
+        } catch {
+          // Language detection is optional; Norwegian remains the safe default.
+        }
+      })();
+    </script>
+  <?php endif; ?>
   <?php foreach ($verificationFields as $field => $metaName) : ?>
     <?php if (trim((string) ($site[$field] ?? '')) !== '') : ?>
       <meta name="<?= e($metaName) ?>" content="<?= e(trim((string) $site[$field])) ?>">
@@ -389,12 +408,20 @@ if ($siteCanonical !== '') {
     }
 
     .nav-link {
+      display: inline-flex;
+      align-items: center;
+      gap: 7px;
       padding: 10px 14px;
       border: 1px solid rgba(15, 92, 81, 0.14);
       border-radius: 999px;
       color: var(--muted);
       background: rgba(255, 251, 244, 0.72);
       transition: transform 180ms ease, border-color 180ms ease, background 180ms ease, color 180ms ease;
+    }
+
+    .language-flag {
+      font-size: 1.05rem;
+      line-height: 1;
     }
 
     .nav-link:hover,
@@ -907,7 +934,7 @@ if ($siteCanonical !== '') {
         <a class="nav-link" href="#mest-brukt"><?= e($ui['nav_popular']) ?></a>
         <a class="nav-link" href="#andre-prosjekter"><?= e($ui['nav_projects']) ?></a>
         <a class="nav-link" href="#fotnoter"><?= e($ui['nav_notes']) ?></a>
-        <a class="nav-link" href="<?= e($alternateLanguageUrl) ?>" lang="<?= $language === 'en' ? 'nb' : 'en' ?>" hreflang="<?= $language === 'en' ? 'nb' : 'en' ?>"><?= e($ui['language_label']) ?></a>
+        <a class="nav-link" href="<?= e($alternateLanguageUrl) ?>" data-language="<?= $language === 'en' ? 'nb' : 'en' ?>" lang="<?= $language === 'en' ? 'nb' : 'en' ?>" hreflang="<?= $language === 'en' ? 'nb' : 'en' ?>"><span class="language-flag" aria-hidden="true"><?= e($ui['language_flag']) ?></span><?= e($ui['language_label']) ?></a>
       </nav>
     </header>
 
@@ -1020,5 +1047,16 @@ if ($siteCanonical !== '') {
       </section>
     </main>
   </div>
+  <script>
+    document.querySelectorAll('[data-language]').forEach((link) => {
+      link.addEventListener('click', () => {
+        try {
+          localStorage.setItem('grendel-language', link.dataset.language);
+        } catch {
+          // The link still works when browser storage is unavailable.
+        }
+      });
+    });
+  </script>
 </body>
 </html>

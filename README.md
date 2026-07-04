@@ -33,6 +33,10 @@ Deploy bygger norsk forside på `/` og engelsk forside på `/en/`. Språkknappen
 lenker mellom de to statiske variantene, og engelske tekster ligger under
 `translations.en` i `content.json`.
 
+På `/` brukes nettleserens primærspråk til å velge engelsk automatisk når det
+begynner med `en`. Et eksplisitt valg i språkknappen lagres lokalt og har alltid
+forrang; norsk er standard når språk ikke kan bestemmes.
+
 ## Deploy
 
 GitHub Actions-workflowen forventer:
