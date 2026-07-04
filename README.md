@@ -61,3 +61,27 @@ Da kjører workflowen `scripts/refresh_ga.php` før publisering og oppdaterer ba
 Hvis du trenger søkemotorverifisering, kan du legge inn felter i `content.json` som `bing_site_verification`, `google_site_verification` og tilsvarende støttefelter. Da blir de skrevet ut som vanlige meta-tagger i den renderte `index.html`.
 
 Som en liten huskelapp: denne forsiden er bare en enkel inngang til Grendel sine Shiny-sider. Kildekode og deploy-oppsett er samlet her i repoet, med arbeidsflyten definert i `.github/workflows/deploy.yml`.
+
+## Search Console-sjekkliste
+
+Sjekk dette de neste 2 til 4 ukene etter at endringen er live:
+
+- `Indexing > Pages`: se at `/` og `/en/` blir indeksert uten feil
+- `Performance > Search results`: se etter endring i impressions, clicks og CTR for brand- og app-navn
+- `URL inspection`: test at Google ser riktig canonical og riktig språkversjon
+- `Enhancements`: sjekk om Google rapporterer strukturerte data eller advarsler
+- `Sitemaps`: verifiser at `sitemap.xml` er hentet uten feil
+- `International targeting`: bekreft at språkvariantene ikke konkurrerer unødvendig med hverandre
+- `Core Web Vitals`: følg med på eventuelle tregheter etter deploy
+
+En enkel praktisk rytme er:
+
+- Dag 1 til 3: bekreft indeksering og at sitemap er lest inn
+- Uke 1: se om impressions begynner å flytte seg
+- Uke 2 til 4: vurder om CTR eller språkfordeling endrer seg
+
+Hvis du vil være ekstra nøktern, noter bare disse tre tallene over tid:
+
+- impressions
+- clicks
+- average CTR
