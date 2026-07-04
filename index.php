@@ -1045,13 +1045,13 @@ if ($siteEntityUrl !== '') {
       <section class="hero" aria-label="<?= e($ui['hero_aria']) ?>">
         <div class="hero-banner">
           <div class="hero-banner-inner">
-            <span class="kicker"><?= e((string) ($hero['kicker'] ?? 'Offisiell startside')) ?></span>
             <h1><?= e((string) ($hero['title'] ?? 'Grendel sine Shiny-apper')) ?></h1>
           </div>
         </div>
         <div class="hero-copy">
           <div class="hero-copy-layout">
             <div class="hero-copy-body">
+              <span class="kicker"><?= e((string) ($hero['kicker'] ?? 'Offisiell startside')) ?></span>
               <p class="lead">
                 <?= e((string) ($hero['lead'] ?? '')) ?>
               </p>
