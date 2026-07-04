@@ -392,7 +392,7 @@ if ($siteEntityUrl !== '') {
         radial-gradient(circle at 82% 18%, rgba(255, 250, 243, 0.72), transparent 25%),
         radial-gradient(circle at 70% 84%, rgba(42, 161, 143, 0.11), transparent 24%),
         linear-gradient(180deg, #f7efe4 0%, #eefaf8 44%, #f8f0e6 100%);
-      font-family: "Trebuchet MS", "Avenir Next", "Avenir", "Segoe UI", "Helvetica Neue", Arial, sans-serif;
+      font-family: Verdana, "Trebuchet MS", "Avenir Next", "Avenir", "Segoe UI", "Helvetica Neue", Arial, sans-serif;
       line-height: 1.5;
     }
 
@@ -506,6 +506,7 @@ if ($siteEntityUrl !== '') {
       margin: 8px 0 28px;
     }
 
+    .hero-banner,
     .hero-copy,
     .hero-aside,
     .section {
@@ -514,6 +515,43 @@ if ($siteEntityUrl !== '') {
       border-radius: var(--radius);
       box-shadow: var(--shadow);
       backdrop-filter: blur(14px);
+    }
+
+    .hero-banner {
+      grid-column: 1 / -1;
+      padding: 26px 34px 18px;
+      position: relative;
+      overflow: hidden;
+    }
+
+    .hero-banner::after {
+      content: "";
+      position: absolute;
+      inset: auto -6% -45% auto;
+      width: 420px;
+      height: 420px;
+      border-radius: 50%;
+      background: radial-gradient(circle, rgba(109, 233, 220, 0.18), transparent 70%);
+      filter: blur(4px);
+      pointer-events: none;
+    }
+
+    .hero-banner-inner {
+      position: relative;
+      z-index: 1;
+      display: flex;
+      align-items: baseline;
+      gap: 14px;
+      flex-wrap: wrap;
+    }
+
+    .hero-banner-inner .kicker {
+      margin-top: 0;
+    }
+
+    .hero-banner-inner h1 {
+      margin: 0;
+      max-width: none;
     }
 
     .hero-copy {
@@ -1005,11 +1043,15 @@ if ($siteEntityUrl !== '') {
 
     <main id="topp">
       <section class="hero" aria-label="<?= e($ui['hero_aria']) ?>">
+        <div class="hero-banner">
+          <div class="hero-banner-inner">
+            <span class="kicker"><?= e((string) ($hero['kicker'] ?? 'Offisiell startside')) ?></span>
+            <h1><?= e((string) ($hero['title'] ?? 'Grendel sine Shiny-apper')) ?></h1>
+          </div>
+        </div>
         <div class="hero-copy">
           <div class="hero-copy-layout">
             <div class="hero-copy-body">
-              <span class="kicker"><?= e((string) ($hero['kicker'] ?? 'Offisiell startside')) ?></span>
-              <h1><?= e((string) ($hero['title'] ?? 'Grendel sine Shiny-apper')) ?></h1>
               <p class="lead">
                 <?= e((string) ($hero['lead'] ?? '')) ?>
               </p>
