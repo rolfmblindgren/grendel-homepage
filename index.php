@@ -95,6 +95,32 @@ function renderMiniCard(array $card, array $ui, bool $link = true): void {
   echo '</' . $tag . '>';
 }
 
+function schemaListItem(array $card, int $position): ?array {
+  $url = trim((string) ($card['href'] ?? ''));
+  $title = trim((string) ($card['title'] ?? ''));
+  $description = trim((string) ($card['description'] ?? ''));
+
+  if ($url === '' || $title === '') {
+    return null;
+  }
+
+  $item = [
+    '@type' => 'ListItem',
+    'position' => $position,
+    'item' => [
+      '@type' => 'WebPage',
+      'url' => $url,
+      'name' => $title,
+    ],
+  ];
+
+  if ($description !== '') {
+    $item['item']['description'] = $description;
+  }
+
+  return $item;
+}
+
 $uiByLanguage = [
   'nb' => [
     'featured' => 'Fremhevet',
@@ -186,8 +212,9 @@ $siteOgImage = trim((string) ($site['og_image'] ?? 'https://shiny.grendel.no/og.
 $brandLine = trim((string) ($site['brand_line'] ?? 'Grendel programvareverksted'));
 $ga4MeasurementId = trim((string) ($site['ga4_measurement_id'] ?? ''));
 $organizationName = trim((string) ($site['organization_name'] ?? 'Grendel'));
-$organizationUrl = trim((string) ($site['organization_url'] ?? $siteCanonical));
+$organizationUrl = trim((string) ($site['organization_url'] ?? $siteRoot));
 $organizationLogo = trim((string) ($site['organization_logo'] ?? 'https://shiny.grendel.no/grendel-g.png'));
+$siteEntityUrl = $siteRoot;
 
 $verificationFields = [
   'bing_site_verification' => 'msvalidate.01',
@@ -201,10 +228,18 @@ $verificationFields = [
 
 $schemaGraph = [];
 
-if ($siteCanonical !== '') {
+if ($siteEntityUrl !== '') {
+  $itemList = [];
+  foreach (array_merge($heroPopularCards, $heroRecommendedCards) as $position => $card) {
+    $item = schemaListItem((array) $card, $position + 1);
+    if ($item !== null) {
+      $itemList[] = $item;
+    }
+  }
+
   $schemaGraph[] = [
     '@type' => 'Organization',
-    '@id' => $siteCanonical . '#organization',
+    '@id' => $siteEntityUrl . '#organization',
     'name' => $organizationName,
     'url' => $organizationUrl,
     'logo' => [
@@ -215,12 +250,38 @@ if ($siteCanonical !== '') {
 
   $schemaGraph[] = [
     '@type' => 'WebSite',
-    '@id' => $siteCanonical . '#website',
-    'url' => $siteCanonical,
+    '@id' => $siteEntityUrl . '#website',
+    'url' => $siteEntityUrl,
     'name' => $siteTitle,
     'description' => $siteDescription,
     'publisher' => [
-      '@id' => $siteCanonical . '#organization',
+      '@id' => $siteEntityUrl . '#organization',
+    ],
+  ];
+
+  $schemaGraph[] = [
+    '@type' => ['WebPage', 'CollectionPage'],
+    '@id' => $siteCanonical . '#webpage',
+    'url' => $siteCanonical,
+    'name' => $siteTitle,
+    'description' => $siteDescription,
+    'inLanguage' => $language === 'en' ? 'en-US' : 'nb-NO',
+    'isPartOf' => [
+      '@id' => $siteEntityUrl . '#website',
+    ],
+    'about' => [
+      '@id' => $siteEntityUrl . '#organization',
+    ],
+    'primaryImageOfPage' => [
+      '@type' => 'ImageObject',
+      'url' => $siteOgImage,
+    ],
+    'mainEntity' => [
+      '@type' => 'ItemList',
+      'name' => $ui['apps_title'],
+      'itemListOrder' => 'https://schema.org/ItemListOrderAscending',
+      'numberOfItems' => count($itemList),
+      'itemListElement' => $itemList,
     ],
   ];
 }
@@ -231,6 +292,10 @@ if ($siteCanonical !== '') {
   <meta charset="utf-8">
   <meta name="viewport" content="width=device-width, initial-scale=1">
   <meta name="color-scheme" content="dark light">
+  <meta name="robots" content="index,follow,max-image-preview:large">
+  <meta property="og:site_name" content="<?= e($organizationName) ?>">
+  <meta property="og:locale" content="<?= e($language === 'en' ? 'en_US' : 'nb_NO') ?>">
+  <meta property="og:locale:alternate" content="<?= e($language === 'en' ? 'nb_NO' : 'en_US') ?>">
   <title><?= e($siteTitle) ?></title>
   <meta name="description" content="<?= e($siteDescription) ?>">
   <meta property="og:title" content="<?= e($siteTitle) ?>">
