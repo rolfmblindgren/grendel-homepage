@@ -17,6 +17,12 @@ try {
   exit;
 }
 
+$language = strtolower((string) ($argv[1] ?? 'nb')) === 'en' ? 'en' : 'nb';
+
+if ($language === 'en' && isset($content['translations']['en'])) {
+  $content = array_replace_recursive($content, $content['translations']['en']);
+}
+
 function e(string $value): string {
   return htmlspecialchars($value, ENT_QUOTES | ENT_SUBSTITUTE, 'UTF-8');
 }
@@ -31,9 +37,9 @@ function renderMetaList(array $items): string {
   return $html;
 }
 
-function renderMainCard(array $card): void {
+function renderMainCard(array $card, array $ui): void {
   $class = 'app-card';
-  $badge = !empty($card['featured']) ? 'Fremhevet' : 'Anbefalt';
+  $badge = !empty($card['featured']) ? $ui['featured'] : $ui['recommended'];
 
   if (!empty($card['featured'])) {
     $class .= ' featured';
@@ -47,7 +53,7 @@ function renderMainCard(array $card): void {
   echo '<h3>' . e((string) $card['title']) . '</h3>';
   echo '<p>' . e((string) $card['description']) . '</p>';
   echo '<ul class="meta-list">' . renderMetaList($card['meta'] ?? []) . '</ul>';
-  echo '<span class="card-link">Åpne appen</span>';
+  echo '<span class="card-link">' . e($ui['open_app']) . '</span>';
   echo '</a>';
 }
 
@@ -64,9 +70,9 @@ function renderSpotlightCard(array $card): void {
   echo '</a>';
 }
 
-function renderMiniCard(array $card, bool $link = true): void {
+function renderMiniCard(array $card, array $ui, bool $link = true): void {
   $link = (bool) ($card['link'] ?? $link);
-  $badge = 'Nyttig';
+  $badge = $ui['useful'];
   $displayPath = trim((string) ($card['path'] ?? ''));
   $targetHref = trim((string) ($card['href'] ?? ($card['path'] ?? '')));
   $tag = $link && $targetHref !== '' ? 'a' : 'div';
@@ -83,11 +89,81 @@ function renderMiniCard(array $card, bool $link = true): void {
   echo '<p>' . e((string) $card['description']) . '</p>';
 
   if ($link) {
-    echo '<span class="card-link">Åpne siden</span>';
+    echo '<span class="card-link">' . e($ui['open_page']) . '</span>';
   }
 
   echo '</' . $tag . '>';
 }
+
+$uiByLanguage = [
+  'nb' => [
+    'featured' => 'Fremhevet',
+    'recommended' => 'Anbefalt',
+    'useful' => 'Nyttig',
+    'open_app' => 'Åpne appen',
+    'open_page' => 'Åpne siden',
+    'topnav_aria' => 'Toppnavigasjon',
+    'nav_popular' => 'Mest brukt',
+    'nav_projects' => 'Andre prosjekter',
+    'nav_notes' => 'Notater',
+    'language_label' => 'English',
+    'hero_aria' => 'Forside',
+    'hero_primary' => 'Se utvalget',
+    'hero_secondary' => 'Se flere sider',
+    'hero_meta_aria' => 'Rask status',
+    'aside_aria' => 'Høyrestilt oversikt',
+    'aside_kicker' => 'Raskt overblikk',
+    'aside_title' => 'Fem som er mest brukt, og to som er gode å ha med',
+    'aside_lead' => 'Ingen tall her, bare en rolig pekepinn på hvor folk vanligvis går først.',
+    'popular_title' => 'Mest brukt',
+    'popular_lead' => 'De fem inngangene vi oftest vil løfte frem.',
+    'recommended_title' => 'Anbefalt',
+    'recommended_lead' => 'To ekstra sider som fortjener plass i nærheten.',
+    'apps_title' => 'Anbefalte apper',
+    'apps_lead' => 'Dette er sidene vi vil løfte frem akkurat nå. De ligger derfor først på forsiden.',
+    'apps_badge' => 'Kuratert utvalg',
+    'projects_title' => 'Andre prosjekter som også fortjener plass',
+    'projects_lead' => 'Ikke alle sider trenger å være størst for å være nyttige. Noen er små, men treffer veldig konkrete behov.',
+    'projects_badge' => 'Kuratert, ikke tilfeldig',
+    'notes_title' => 'Små notater',
+    'notes_lead' => 'Jeg har også tatt med noen gamle innganger som fortsatt er nyttige å finne.',
+    'hero_image_alt' => 'Illustrasjon av Grendel sitt programvareverksted',
+  ],
+  'en' => [
+    'featured' => 'Featured',
+    'recommended' => 'Recommended',
+    'useful' => 'Useful',
+    'open_app' => 'Open app',
+    'open_page' => 'Open page',
+    'topnav_aria' => 'Main navigation',
+    'nav_popular' => 'Most used',
+    'nav_projects' => 'Other projects',
+    'nav_notes' => 'Notes',
+    'language_label' => 'Norsk',
+    'hero_aria' => 'Home page',
+    'hero_primary' => 'See the selection',
+    'hero_secondary' => 'See more pages',
+    'hero_meta_aria' => 'Quick facts',
+    'aside_aria' => 'Quick overview',
+    'aside_kicker' => 'At a glance',
+    'aside_title' => 'Five frequently used pages, plus two worth keeping nearby',
+    'aside_lead' => 'No league table, just a quiet indication of where people usually go first.',
+    'popular_title' => 'Most used',
+    'popular_lead' => 'The five pages we most often want to highlight.',
+    'recommended_title' => 'Recommended',
+    'recommended_lead' => 'Two additional pages that deserve a place nearby.',
+    'apps_title' => 'Recommended apps',
+    'apps_lead' => 'These are the pages we want to highlight at the moment, so they come first.',
+    'apps_badge' => 'Curated selection',
+    'projects_title' => 'Other projects worth a place here',
+    'projects_lead' => 'A page does not have to be large to be useful. Some are small and meet very specific needs.',
+    'projects_badge' => 'Curated, not random',
+    'notes_title' => 'A few notes',
+    'notes_lead' => 'I have also included a couple of older routes that are still useful to find.',
+    'hero_image_alt' => 'Illustration of Grendel software workshop',
+  ],
+];
+$ui = $uiByLanguage[$language];
 
 $site = $content['site'] ?? [];
 $hero = $content['hero'] ?? [];
@@ -101,6 +177,9 @@ $heroRecommendedCards = array_slice($secondaryCards, 0, 2);
 $siteTitle = trim((string) ($site['title'] ?? 'Grendel sine Shiny-apper'));
 $siteDescription = trim((string) ($site['description'] ?? ''));
 $siteCanonical = trim((string) ($site['canonical'] ?? 'https://shiny.grendel.no/'));
+$siteRoot = rtrim($siteCanonical, '/') . '/';
+$siteCanonical = $language === 'en' ? $siteRoot . 'en/' : $siteRoot;
+$alternateLanguageUrl = $language === 'en' ? $siteRoot : $siteRoot . 'en/';
 $siteOgImage = trim((string) ($site['og_image'] ?? 'https://shiny.grendel.no/og.svg'));
 $brandLine = trim((string) ($site['brand_line'] ?? 'Grendel programvareverksted'));
 $ga4MeasurementId = trim((string) ($site['ga4_measurement_id'] ?? ''));
@@ -145,7 +224,7 @@ if ($siteCanonical !== '') {
 }
 ?>
 <!doctype html>
-<html lang="nb">
+<html lang="<?= e($language) ?>">
 <head>
   <meta charset="utf-8">
   <meta name="viewport" content="width=device-width, initial-scale=1">
@@ -162,8 +241,11 @@ if ($siteCanonical !== '') {
   <meta name="twitter:description" content="<?= e($siteDescription) ?>">
   <meta name="twitter:image" content="<?= e($siteOgImage) ?>">
   <link rel="canonical" href="<?= e($siteCanonical) ?>">
+  <link rel="alternate" hreflang="nb" href="<?= e($siteRoot) ?>">
+  <link rel="alternate" hreflang="en" href="<?= e($siteRoot . 'en/') ?>">
+  <link rel="alternate" hreflang="x-default" href="<?= e($siteRoot) ?>">
   <link rel="sitemap" type="application/xml" title="Sitemap" href="/sitemap.xml">
-  <link rel="icon" href="favicon.svg">
+  <link rel="icon" href="/favicon.svg">
   <?php foreach ($verificationFields as $field => $metaName) : ?>
     <?php if (trim((string) ($site[$field] ?? '')) !== '') : ?>
       <meta name="<?= e($metaName) ?>" content="<?= e(trim((string) $site[$field])) ?>">
@@ -813,23 +895,24 @@ if ($siteCanonical !== '') {
 </head>
 <body>
   <div class="shell">
-    <header class="topbar" aria-label="Toppnavigasjon">
+    <header class="topbar" aria-label="<?= e($ui['topnav_aria']) ?>">
       <a class="brand" href="#topp">
-        <img class="brand-mark" src="grendel-g.png" alt="">
+        <img class="brand-mark" src="/grendel-g.png" alt="">
         <span class="brand-name">
           <strong><?= e($organizationName) ?></strong>
           <span><?= e($brandLine) ?></span>
         </span>
       </a>
       <nav class="topnav">
-        <a class="nav-link" href="#mest-brukt">Mest brukt</a>
-        <a class="nav-link" href="#andre-prosjekter">Andre prosjekter</a>
-        <a class="nav-link" href="#fotnoter">Notater</a>
+        <a class="nav-link" href="#mest-brukt"><?= e($ui['nav_popular']) ?></a>
+        <a class="nav-link" href="#andre-prosjekter"><?= e($ui['nav_projects']) ?></a>
+        <a class="nav-link" href="#fotnoter"><?= e($ui['nav_notes']) ?></a>
+        <a class="nav-link" href="<?= e($alternateLanguageUrl) ?>" lang="<?= $language === 'en' ? 'nb' : 'en' ?>" hreflang="<?= $language === 'en' ? 'nb' : 'en' ?>"><?= e($ui['language_label']) ?></a>
       </nav>
     </header>
 
     <main id="topp">
-      <section class="hero" aria-label="Forside">
+      <section class="hero" aria-label="<?= e($ui['hero_aria']) ?>">
         <div class="hero-copy">
           <div class="hero-copy-layout">
             <div class="hero-copy-body">
@@ -839,10 +922,10 @@ if ($siteCanonical !== '') {
                 <?= e((string) ($hero['lead'] ?? '')) ?>
               </p>
               <div class="hero-actions">
-                <a class="button primary" href="#mest-brukt">Se utvalget</a>
-                <a class="button secondary" href="#andre-prosjekter">Se flere sider</a>
+                <a class="button primary" href="#mest-brukt"><?= e($ui['hero_primary']) ?></a>
+                <a class="button secondary" href="#andre-prosjekter"><?= e($ui['hero_secondary']) ?></a>
               </div>
-              <div class="hero-meta" aria-label="Rask status">
+              <div class="hero-meta" aria-label="<?= e($ui['hero_meta_aria']) ?>">
                 <?php foreach ($heroMeta as $chip): ?>
                   <span class="chip"><strong><?= e((string) ($chip['strong'] ?? '')) ?></strong> <?= e((string) ($chip['text'] ?? '')) ?></span>
                 <?php endforeach; ?>
@@ -850,22 +933,22 @@ if ($siteCanonical !== '') {
             </div>
 
             <figure class="hero-art">
-              <img src="grendel.png" alt="Illustrasjon av Grendel sitt programvareverksted" loading="eager" decoding="async">
+              <img src="/grendel.png" alt="<?= e($ui['hero_image_alt']) ?>" loading="eager" decoding="async">
             </figure>
           </div>
         </div>
 
-        <aside class="hero-aside" aria-label="Høyrestilt oversikt">
+        <aside class="hero-aside" aria-label="<?= e($ui['aside_aria']) ?>">
           <div class="hero-aside-head">
-            <span class="kicker">Raskt overblikk</span>
-            <h2>Fem som er mest brukt, og to som er gode å ha med</h2>
-            <p>Ingen tall her, bare en rolig pekepinn på hvor folk vanligvis går først.</p>
+            <span class="kicker"><?= e($ui['aside_kicker']) ?></span>
+            <h2><?= e($ui['aside_title']) ?></h2>
+            <p><?= e($ui['aside_lead']) ?></p>
           </div>
 
           <div class="spotlight-group">
             <div>
-              <h3>Mest brukt</h3>
-              <p>De fem inngangene vi oftest vil løfte frem.</p>
+              <h3><?= e($ui['popular_title']) ?></h3>
+              <p><?= e($ui['popular_lead']) ?></p>
             </div>
             <div class="spotlight-list">
               <?php foreach ($heroPopularCards as $card) {
@@ -876,8 +959,8 @@ if ($siteCanonical !== '') {
 
           <div class="spotlight-group">
             <div>
-              <h3>Anbefalt</h3>
-              <p>To ekstra sider som fortjener plass i nærheten.</p>
+              <h3><?= e($ui['recommended_title']) ?></h3>
+              <p><?= e($ui['recommended_lead']) ?></p>
             </div>
             <div class="spotlight-list">
               <?php foreach ($heroRecommendedCards as $card) {
@@ -892,18 +975,15 @@ if ($siteCanonical !== '') {
       <section class="section" id="mest-brukt">
         <div class="section-head">
           <div>
-            <h2>Anbefalte apper</h2>
-            <p>
-              Dette er sidene vi vil løfte frem akkurat nå.
-              De ligger derfor først på forsiden.
-            </p>
+            <h2><?= e($ui['apps_title']) ?></h2>
+            <p><?= e($ui['apps_lead']) ?></p>
           </div>
-          <span class="badge">Kuratert utvalg</span>
+          <span class="badge"><?= e($ui['apps_badge']) ?></span>
         </div>
 
         <div class="app-grid">
           <?php foreach ($mainCards as $card) {
-            renderMainCard($card);
+            renderMainCard($card, $ui);
           } ?>
         </div>
       </section>
@@ -911,18 +991,15 @@ if ($siteCanonical !== '') {
       <section class="section" id="andre-prosjekter">
         <div class="section-head">
           <div>
-            <h2>Andre prosjekter som også fortjener plass</h2>
-            <p>
-              Ikke alle sider trenger å være størst for å være nyttige. Noen er små,
-              men treffer veldig konkrete behov.
-            </p>
+            <h2><?= e($ui['projects_title']) ?></h2>
+            <p><?= e($ui['projects_lead']) ?></p>
           </div>
-          <span class="badge">Kuratert, ikke tilfeldig</span>
+          <span class="badge"><?= e($ui['projects_badge']) ?></span>
         </div>
 
         <div class="smaller-grid">
           <?php foreach ($secondaryCards as $card) {
-            renderMiniCard($card);
+            renderMiniCard($card, $ui);
           } ?>
         </div>
       </section>
@@ -930,16 +1007,14 @@ if ($siteCanonical !== '') {
       <section class="section" id="fotnoter">
         <div class="section-head">
           <div>
-            <h2>Små notater</h2>
-            <p>
-              Jeg har også tatt med noen gamle innganger som fortsatt er nyttige å finne.
-            </p>
+            <h2><?= e($ui['notes_title']) ?></h2>
+            <p><?= e($ui['notes_lead']) ?></p>
           </div>
         </div>
 
         <div class="smaller-grid">
           <?php foreach ($notesCards as $card) {
-            renderMiniCard($card);
+            renderMiniCard($card, $ui);
           } ?>
         </div>
       </section>

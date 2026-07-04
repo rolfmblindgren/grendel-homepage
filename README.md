@@ -23,6 +23,16 @@ php -S 127.0.0.1:8080
 
 Deretter kan du åpne `http://127.0.0.1:8080/`.
 
+For å kontrollere den engelske varianten lokalt:
+
+```sh
+php index.php en > /tmp/grendel-homepage-en.html
+```
+
+Deploy bygger norsk forside på `/` og engelsk forside på `/en/`. Språkknappen
+lenker mellom de to statiske variantene, og engelske tekster ligger under
+`translations.en` i `content.json`.
+
 ## Deploy
 
 GitHub Actions-workflowen forventer:

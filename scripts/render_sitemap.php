@@ -60,6 +60,7 @@ if ($baseUrl === '') {
 
 $urls = [];
 addSitemapUrl($urls, rtrim($baseUrl, '/') . '/', 'daily', '1.0');
+addSitemapUrl($urls, rtrim($baseUrl, '/') . '/en/', 'daily', '0.8');
 
 $mainCards = $content['main_cards'] ?? [];
 $secondaryCards = $content['secondary_cards'] ?? [];

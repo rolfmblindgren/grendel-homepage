@@ -168,5 +168,44 @@
       "title": "WISC-testing",
       "description": "Mer en faglig forklaringsside enn en full app, men tydelig interessant for et nisjepublikum."
     }
-  ]
+  ],
+  "translations": {
+    "en": {
+      "site": {
+        "title": "Grendel's Shiny apps",
+        "description": "A curated selection of Grendel's Shiny apps, tests and tools, with the most useful pages and a few specialist favourites.",
+        "brand_line": "Grendel software workshop"
+      },
+      "hero": {
+        "kicker": "Official home page",
+        "title": "Grendel's Shiny apps",
+        "lead": "A curated collection of tools, tests and specialist pages. Some are useful, some are a little more peculiar, and several are visited by actual people."
+      },
+      "hero_meta": [
+        { "strong": "Curated", "text": "selection" },
+        { "strong": "Easy", "text": "to use" },
+        { "strong": "Made for", "text": "mobile and desktop" }
+      ],
+      "main_cards": [
+        { "title": "This is not an ADHD test", "description": "A brief self-report measure of the absence of attention and regulation difficulties. Not a diagnostic tool.", "meta": ["Self-report", "Not diagnostic", "Widely used"] },
+        { "title": "Career fit calculator", "description": "Uses Big Five profiles to suggest occupations that may suit you better than most people would expect.", "meta": ["Big Five", "Careers", "Practical"] },
+        { "title": "From ICD-10 types to ICD-11 traits", "description": "An educational transition tool for understanding how the old personality disorder types may resemble trait profiles.", "meta": ["Educational", "ICD-10 / ICD-11", "Donation"] },
+        { "title": "WISC calculator", "description": "A calculator for percentiles, standard deviations and IQ scores in WPPSI, WISC and WAIS.", "meta": ["Percentiles", "Standard deviations", "IQ scores"] },
+        { "title": "Cover letters with actual content", "description": "A modular wizard that helps you write a concrete cover letter instead of assembling empty phrases.", "meta": ["CV + job ad", "AI-assisted", "Document draft"] },
+        { "title": "Utility calculator", "description": "Calculates the utility of selection methods in recruitment and makes the underlying formula easier to understand.", "meta": ["Selection", "Recruitment", "Educational"] },
+        { "title": "Autism questionnaire", "description": "A brief self-report measure of traits and experiences that may be relevant. Not a diagnostic tool.", "meta": ["Self-report", "Not diagnostic", "Use with care"] }
+      ],
+      "secondary_cards": [
+        { "title": "shinyseo", "description": "A small R package for SEO work, mainly for those with a particular interest. The link goes to CRAN." },
+        { "title": "Kitchen geek", "description": "A small Shiny app for simple, useful physics calculations in the kitchen." },
+        { "title": "Climate scepticism", "description": "Shows the development of Arctic sea ice at its annual minimum, with smoothing and explanations." },
+        { "title": "Children's films in Verdal and Steinkjer", "description": "An up-to-date overview of films for children and young people, including dates, times, screens and short descriptions." },
+        { "title": "Cognitive tracking", "description": "Daily self-monitoring of cognitive change over time, measured against yourself rather than a norm." }
+      ],
+      "notes_cards": [
+        { "title": "Legacy route to the ADHD questionnaire", "description": "An older route into the same topic that still attracts its own small stream of traffic." },
+        { "title": "WISC testing", "description": "More of a specialist explainer than a full app, but clearly useful to a niche audience." }
+      ]
+    }
+  }
 }
