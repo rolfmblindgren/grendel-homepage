@@ -26,9 +26,17 @@ function normalizeSitemapUrl(string $url, string $baseUrl): string {
     return '';
   }
 
-  if (str_starts_with($url, 'http://') || str_starts_with($url, 'https://')) {
-    return $url;
+if (str_starts_with($url, 'http://') || str_starts_with($url, 'https://')) {
+  $host = parse_url($url, PHP_URL_HOST);
+  $baseHost = parse_url($baseUrl, PHP_URL_HOST);
+
+  if (!is_string($host) || !is_string($baseHost)
+      || strcasecmp($host, $baseHost) !== 0) {
+    return '';
   }
+
+  return $url;
+}
 
   if ($url[0] !== '/') {
     $url = '/' . $url;
