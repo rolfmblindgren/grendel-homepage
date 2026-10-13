@@ -26,17 +26,34 @@ function normalizeSitemapUrl(string $url, string $baseUrl): string {
     return '';
   }
 
-if (str_starts_with($url, 'http://') || str_starts_with($url, 'https://')) {
-  $host = parse_url($url, PHP_URL_HOST);
-  $baseHost = parse_url($baseUrl, PHP_URL_HOST);
+  if (str_starts_with($url, 'http://') || str_starts_with($url, 'https://')) {
+    $parsedUrl = parse_url($url);
+    $parsedBaseUrl = parse_url($baseUrl);
 
-  if (!is_string($host) || !is_string($baseHost)
-      || strcasecmp($host, $baseHost) !== 0) {
-    return '';
+    if (!is_array($parsedUrl) || !is_array($parsedBaseUrl)) {
+      return '';
+    }
+
+    $scheme = strtolower((string) ($parsedUrl['scheme'] ?? ''));
+    $baseScheme = strtolower((string) ($parsedBaseUrl['scheme'] ?? ''));
+    $host = (string) ($parsedUrl['host'] ?? '');
+    $baseHost = (string) ($parsedBaseUrl['host'] ?? '');
+    $port = $parsedUrl['port'] ?? ($scheme === 'https' ? 443 : 80);
+    $basePort = $parsedBaseUrl['port'] ?? ($baseScheme === 'https' ? 443 : 80);
+
+    if (!in_array($scheme, ['http', 'https'], true)
+        || $scheme !== $baseScheme
+        || $host === ''
+        || $baseHost === ''
+        || strcasecmp($host, $baseHost) !== 0
+        || $port !== $basePort
+        || isset($parsedUrl['user'])
+        || isset($parsedUrl['pass'])) {
+      return '';
+    }
+
+    return $url;
   }
-
-  return $url;
-}
 
   if ($url[0] !== '/') {
     $url = '/' . $url;
