@@ -132,6 +132,8 @@ $uiByLanguage = [
     'nav_popular' => 'Mest brukt',
     'nav_projects' => 'Andre prosjekter',
     'nav_notes' => 'Notater',
+    'nav_ai_skills' => 'AI-skills',
+    'nav_ai_skills_aria' => 'Utforsk AI-skills hos Agensi',
     'language_label' => 'English',
     'language_flag' => '🇬🇧',
     'hero_aria' => 'Forside',
@@ -166,6 +168,8 @@ $uiByLanguage = [
     'nav_popular' => 'Most used',
     'nav_projects' => 'Other projects',
     'nav_notes' => 'Notes',
+    'nav_ai_skills' => 'AI skills',
+    'nav_ai_skills_aria' => 'Explore AI skills at Agensi',
     'language_label' => 'Norsk',
     'language_flag' => '🇳🇴',
     'hero_aria' => 'Home page',
@@ -482,6 +486,24 @@ if ($siteEntityUrl !== '') {
       color: var(--muted);
       background: rgba(255, 251, 244, 0.72);
       transition: transform 180ms ease, border-color 180ms ease, background 180ms ease, color 180ms ease;
+    }
+
+    .nav-link.ai-skills-link {
+      border-color: var(--accent-2);
+      color: #fff;
+      background: var(--accent-2);
+      font-weight: 700;
+    }
+
+    .nav-link.ai-skills-link:hover {
+      border-color: #0b463e;
+      color: #fff;
+      background: #0b463e;
+    }
+
+    .nav-link.ai-skills-link:focus-visible {
+      outline: 3px solid var(--accent);
+      outline-offset: 2px;
     }
 
     .language-flag {
@@ -1037,6 +1059,7 @@ if ($siteEntityUrl !== '') {
         <a class="nav-link" href="#mest-brukt"><?= e($ui['nav_popular']) ?></a>
         <a class="nav-link" href="#andre-prosjekter"><?= e($ui['nav_projects']) ?></a>
         <a class="nav-link" href="#fotnoter"><?= e($ui['nav_notes']) ?></a>
+        <a class="nav-link ai-skills-link" href="https://www.agensi.io/r/ROLFMBLINDGREN" target="_blank" rel="sponsored noopener noreferrer" aria-label="<?= e($ui['nav_ai_skills_aria']) ?>"><?= e($ui['nav_ai_skills']) ?></a>
         <a class="nav-link" href="<?= e($alternateLanguageUrl) ?>" data-language="<?= $language === 'en' ? 'nb' : 'en' ?>" lang="<?= $language === 'en' ? 'nb' : 'en' ?>" hreflang="<?= $language === 'en' ? 'nb' : 'en' ?>"><span class="language-flag" aria-hidden="true"><?= e($ui['language_flag']) ?></span><?= e($ui['language_label']) ?></a>
       </nav>
     </header>
