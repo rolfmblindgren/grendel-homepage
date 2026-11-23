@@ -49,6 +49,9 @@ jobs:
       - name: Render sitemap
         run: php scripts/render_sitemap.php > sitemap.xml
 
+      - name: Kontroller SEO og språkversjoner
+        run: php scripts/check_seo.php
+
       - name: Fjern gammel index.html og index.php
         run: |
           ssh -i ~/.ssh/id_rsa -o IdentitiesOnly=yes "${DEPLOY_USER}@${DEPLOY_HOST}" \
@@ -57,7 +60,7 @@ jobs:
       - name: Synkroniser homepage-filer
         run: |
           scp -i ~/.ssh/id_rsa -o IdentitiesOnly=yes \
-            index.html sitemap.xml robots.txt content.json favicon.svg og.svg grendel-g.png grendel.png hero-illustration.png \
+            index.html sitemap.xml robots.txt content.json favicon.svg og.svg og.png og-en.png grendel-g.png grendel.png grendel.webp grendel-640.webp hero-illustration.png \
             "${DEPLOY_USER}@${DEPLOY_HOST}:/srv/shiny-server/"
           scp -i ~/.ssh/id_rsa -o IdentitiesOnly=yes \
             en/index.html "${DEPLOY_USER}@${DEPLOY_HOST}:/srv/shiny-server/en/index.html"
@@ -65,4 +68,4 @@ jobs:
       - name: Sett filrettigheter
         run: |
           ssh -i ~/.ssh/id_rsa -o IdentitiesOnly=yes "${DEPLOY_USER}@${DEPLOY_HOST}" \
-            "chmod 0644 /srv/shiny-server/index.html /srv/shiny-server/en/index.html /srv/shiny-server/sitemap.xml /srv/shiny-server/robots.txt /srv/shiny-server/content.json /srv/shiny-server/favicon.svg /srv/shiny-server/og.svg /srv/shiny-server/grendel-g.png /srv/shiny-server/grendel.png /srv/shiny-server/hero-illustration.png"
+            "chmod 0644 /srv/shiny-server/index.html /srv/shiny-server/en/index.html /srv/shiny-server/sitemap.xml /srv/shiny-server/robots.txt /srv/shiny-server/content.json /srv/shiny-server/favicon.svg /srv/shiny-server/og.svg /srv/shiny-server/og.png /srv/shiny-server/og-en.png /srv/shiny-server/grendel-g.png /srv/shiny-server/grendel.png /srv/shiny-server/grendel.webp /srv/shiny-server/grendel-640.webp /srv/shiny-server/hero-illustration.png"

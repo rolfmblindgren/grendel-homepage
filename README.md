@@ -8,8 +8,11 @@ Statisk forside for `https://shiny.grendel.no/`, bygget fra en PHP-mal i deploy.
 - `content.json` - innhold som kan oppdateres uten å røre layouten, inkludert GA4, schema.org og verifiseringskoder
 - `grendel-g.png` - den offisielle logoen
 - `favicon.svg` - ikon for nettleseren
-- `og.svg` - delingsbilde for sosiale medier
+- `og.svg` / `og-en.svg` - redigerbare originaler til delingsbildene
+- `og.png` / `og-en.png` - delingsbilder i 16:9, norsk og engelsk
+- `grendel.webp` / `grendel-640.webp` - komprimerte varianter av forsideillustrasjonen
 - `scripts/render_sitemap.php` - bygger `sitemap.xml` fra samme innhold som forsiden
+- `scripts/check_seo.php` - kontrollerer de ferdig renderte språkversjonene før publisering
 - `robots.txt` - peker søkemotorer til sitemap
 - `.github/workflows/deploy.yml` - deploy til live server
 
@@ -33,9 +36,29 @@ Deploy bygger norsk forside på `/` og engelsk forside på `/en/`. Språkknappen
 lenker mellom de to statiske variantene, og engelske tekster ligger under
 `translations.en` i `content.json`.
 
-På `/` brukes nettleserens primærspråk til å velge engelsk automatisk når det
-begynner med `en`. Et eksplisitt valg i språkknappen lagres lokalt og har alltid
-forrang; norsk er standard når språk ikke kan bestemmes.
+Begge språkversjonene har fast adresse, egen canonical og gjensidige hreflang-lenker.
+Nye besøkende på `/` sendes ikke automatisk til en annen språkversjon ut fra
+nettleserspråk. Et eksplisitt valg i språkknappen lagres lokalt; et lagret valg
+av engelsk sender senere besøk på `/` til `/en/`.
+
+Kontroller samme statiske filer som publiseres:
+
+```sh
+php index.php > index.html
+mkdir -p en
+php index.php en > en/index.html
+php scripts/render_sitemap.php > sitemap.xml
+php scripts/check_seo.php
+```
+
+Genererte HTML- og sitemap-filer skal ikke sjekkes inn. Delingsbildene er
+ferdig rendret PNG, så produksjon trenger ingen bildekonvertering. Etter
+endringer i SVG-originalene kan de gjenskapes med `rsvg-convert`:
+
+```sh
+rsvg-convert -o og.png og.svg
+rsvg-convert -o og-en.png og-en.svg
+```
 
 ## Deploy
 
@@ -45,8 +68,10 @@ GitHub Actions-workflowen forventer:
 - `DEPLOY_HOST` som repository variable, eller standardverdien `dnsgrendel.grendel.no`
 - `DEPLOY_USER` som repository variable, eller standardverdien `deployshiny`
 
-Workflowen rendrer `index.php` til `index.html`, kopierer `index.html`, `content.json`, `favicon.svg`, `og.svg` og `grendel-g.png` til `/srv/shiny-server/`, og fjerner den gamle `index.html` og `index.php` først.
-Den tar også med `grendel.png` når hero-bildet brukes i forsiden.
+Workflowen rendrer begge språkversjonene og sitemapet, og kontrollerer metadata,
+schema-listen og bildene før filer endres på serveren. HTML, innhold, logo,
+delingsbilder og illustrasjonene kopieres til `/srv/shiny-server/`.
+Forsiden velger WebP i passende størrelse, med `grendel.png` som reserveformat.
 Den rendrer også `scripts/render_sitemap.php` til `sitemap.xml` og legger ut en `robots.txt` som peker på sitemap.
 Den kjører både ved push, manuelt og daglig, så landing-page-tallene holder seg oppdatert uten PHP i produksjon.
 
@@ -71,7 +96,7 @@ Sjekk dette de neste 2 til 4 ukene etter at endringen er live:
 - `URL inspection`: test at Google ser riktig canonical og riktig språkversjon
 - `Enhancements`: sjekk om Google rapporterer strukturerte data eller advarsler
 - `Sitemaps`: verifiser at `sitemap.xml` er hentet uten feil
-- `International targeting`: bekreft at språkvariantene ikke konkurrerer unødvendig med hverandre
+- Kontroller canonical og hreflang i begge språkversjoner; ikke baser kontrollen på en egen «International targeting»-rapport
 - `Core Web Vitals`: følg med på eventuelle tregheter etter deploy
 
 En enkel praktisk rytme er:

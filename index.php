@@ -212,7 +212,10 @@ $siteCanonical = trim((string) ($site['canonical'] ?? 'https://shiny.grendel.no/
 $siteRoot = rtrim($siteCanonical, '/') . '/';
 $siteCanonical = $language === 'en' ? $siteRoot . 'en/' : $siteRoot;
 $alternateLanguageUrl = $language === 'en' ? $siteRoot : $siteRoot . 'en/';
-$siteOgImage = trim((string) ($site['og_image'] ?? 'https://shiny.grendel.no/og.svg'));
+$siteOgImage = trim((string) ($site['og_image'] ?? 'https://shiny.grendel.no/og.png'));
+$siteOgImageAlt = trim((string) ($site['og_image_alt'] ?? $siteTitle));
+$siteOgImageWidth = (int) ($site['og_image_width'] ?? 1600);
+$siteOgImageHeight = (int) ($site['og_image_height'] ?? 900);
 $brandLine = trim((string) ($site['brand_line'] ?? 'Grendel programvareverksted'));
 $ga4MeasurementId = trim((string) ($site['ga4_measurement_id'] ?? ''));
 $organizationName = trim((string) ($site['organization_name'] ?? 'Grendel'));
@@ -234,8 +237,8 @@ $schemaGraph = [];
 
 if ($siteEntityUrl !== '') {
   $itemList = [];
-  foreach (array_merge($heroPopularCards, $heroRecommendedCards) as $position => $card) {
-    $item = schemaListItem((array) $card, $position + 1);
+  foreach ($mainCards as $card) {
+    $item = schemaListItem((array) $card, count($itemList) + 1);
     if ($item !== null) {
       $itemList[] = $item;
     }
@@ -279,6 +282,8 @@ if ($siteEntityUrl !== '') {
     'primaryImageOfPage' => [
       '@type' => 'ImageObject',
       'url' => $siteOgImage,
+      'width' => $siteOgImageWidth,
+      'height' => $siteOgImageHeight,
     ],
     'mainEntity' => [
       '@type' => 'ItemList',
@@ -307,10 +312,15 @@ if ($siteEntityUrl !== '') {
   <meta property="og:type" content="website">
   <meta property="og:url" content="<?= e($siteCanonical) ?>">
   <meta property="og:image" content="<?= e($siteOgImage) ?>">
+  <meta property="og:image:type" content="image/png">
+  <meta property="og:image:width" content="<?= $siteOgImageWidth ?>">
+  <meta property="og:image:height" content="<?= $siteOgImageHeight ?>">
+  <meta property="og:image:alt" content="<?= e($siteOgImageAlt) ?>">
   <meta name="twitter:card" content="summary_large_image">
   <meta name="twitter:title" content="<?= e($siteTitle) ?>">
   <meta name="twitter:description" content="<?= e($siteDescription) ?>">
   <meta name="twitter:image" content="<?= e($siteOgImage) ?>">
+  <meta name="twitter:image:alt" content="<?= e($siteOgImageAlt) ?>">
   <link rel="canonical" href="<?= e($siteCanonical) ?>">
   <link rel="alternate" hreflang="nb" href="<?= e($siteRoot) ?>">
   <link rel="alternate" hreflang="en" href="<?= e($siteRoot . 'en/') ?>">
@@ -322,14 +332,13 @@ if ($siteEntityUrl !== '') {
       (() => {
         try {
           const savedLanguage = localStorage.getItem('grendel-language');
-          const primaryLanguage = (navigator.languages?.[0] || navigator.language || '').toLowerCase();
           const onFrontPage = location.pathname === '/' || location.pathname === '/index.html';
 
-          if (onFrontPage && (savedLanguage === 'en' || (!savedLanguage && primaryLanguage.startsWith('en')))) {
+          if (onFrontPage && savedLanguage === 'en') {
             location.replace('/en/');
           }
         } catch {
-          // Language detection is optional; Norwegian remains the safe default.
+          // Only an explicit language choice redirects; both URLs remain crawlable.
         }
       })();
     </script>
@@ -1049,7 +1058,7 @@ if ($siteEntityUrl !== '') {
   <div class="shell">
     <header class="topbar" aria-label="<?= e($ui['topnav_aria']) ?>">
       <a class="brand" href="#topp">
-        <img class="brand-mark" src="/grendel-g.png" alt="">
+        <img class="brand-mark" src="/grendel-g.png" width="491" height="472" alt="">
         <span class="brand-name">
           <strong><?= e($organizationName) ?></strong>
           <span><?= e($brandLine) ?></span>
@@ -1090,7 +1099,10 @@ if ($siteEntityUrl !== '') {
             </div>
 
             <figure class="hero-art">
-              <img src="/grendel.png" alt="<?= e($ui['hero_image_alt']) ?>" loading="eager" decoding="async">
+              <picture>
+                <source type="image/webp" srcset="/grendel-640.webp 640w, /grendel.webp 1024w" sizes="(max-width: 540px) calc(100vw - 60px), 480px">
+                <img src="/grendel.png" width="1024" height="1536" alt="<?= e($ui['hero_image_alt']) ?>" loading="eager" fetchpriority="high" decoding="async">
+              </picture>
             </figure>
           </div>
         </div>

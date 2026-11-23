@@ -1,9 +1,12 @@
 {
   "site": {
-    "title": "Grendel sine Shiny-apper",
-    "description": "Et kuratert utvalg av Grendel sine Shiny-apper, tester og verktøy. En pen startside med de mest brukte sidene og noen faglige favoritter.",
+    "title": "Psykologiske verktøy og kalkulatorer | Grendel",
+    "description": "Verktøy fra Grendel: WISC-kalkulator, yrkestilpasning med Big Five, selvrapporteringsskjemaer og hjelp til søknadsbrev.",
     "canonical": "https://shiny.grendel.no/",
-    "og_image": "https://shiny.grendel.no/og.svg",
+    "og_image": "https://shiny.grendel.no/og.png",
+    "og_image_width": 1600,
+    "og_image_height": 900,
+    "og_image_alt": "Grendel – psykologiske verktøy og kalkulatorer",
     "brand_line": "Grendel programvareverksted",
     "ga4_measurement_id": "G-M19N4XC355",
     "organization_name": "Grendel",
@@ -14,8 +17,8 @@
   },
   "hero": {
     "kicker": "Offisiell startside",
-    "title": "Grendel sine Shiny-apper",
-    "lead": "Et kuratert utvalg av verktøy, tester og faglige sider. Noen er nyttige, noen er litt særere, og flere har faktisk folk vært inne på."
+    "title": "Psykologiske verktøy og kalkulatorer",
+    "lead": "Her finner du Grendels Shiny-apper: WISC-kalkulator, yrkestilpasning med Big Five, selvrapporteringsskjemaer og andre verktøy for fagfolk og nysgjerrige."
   },
   "hero_meta": [
     {
@@ -86,7 +89,7 @@
       "sessions": 35,
       "path": "/coverletterwizard",
       "title": "Søknadsbrev med faktisk innhold",
-      "description": "En modulær wizard som hjelper deg å skrive søknadsbrev med konkret innhold, ikke bare floskler.",
+      "description": "En trinnvis veiviser som hjelper deg å skrive søknadsbrev med konkret innhold, ikke bare floskler.",
       "meta": [
         "CV + annonse",
         "AI-støtte",
@@ -158,7 +161,7 @@
   "notes_cards": [
     {
       "sessions": 99,
-      "title": "Legacy inngang til ADHD-testen",
+      "title": "Eldre inngang til ADHD-testen",
       "description": "En eldre vei inn til samme tema, som fortsatt har sin egen lille trafikkstrøm.",
       "link": false
     },
@@ -172,14 +175,16 @@
   "translations": {
     "en": {
       "site": {
-        "title": "Grendel's Shiny apps",
-        "description": "A curated selection of Grendel's Shiny apps, tests and tools, with the most useful pages and a few specialist favourites.",
-        "brand_line": "Grendel software workshop"
+        "title": "Psychology tools and calculators | Grendel",
+        "description": "Tools from Grendel: WISC score calculator, Big Five career fit, self-report questionnaires and help writing cover letters.",
+        "brand_line": "Grendel software workshop",
+        "og_image": "https://shiny.grendel.no/og-en.png",
+        "og_image_alt": "Grendel – psychology tools and calculators"
       },
       "hero": {
         "kicker": "Official home page",
-        "title": "Grendel's Shiny apps",
-        "lead": "A curated collection of tools, tests and specialist pages. Some are useful, some are a little more peculiar, and several are visited by actual people."
+        "title": "Psychology tools and calculators",
+        "lead": "Explore Grendel’s Shiny apps: a WISC score calculator, Big Five career fit, self-report questionnaires and other tools for professionals and curious readers."
       },
       "hero_meta": [
         { "strong": "Curated", "text": "selection" },
