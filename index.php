@@ -131,6 +131,7 @@ $uiByLanguage = [
     'topnav_aria' => 'Toppnavigasjon',
     'nav_popular' => 'Mest brukt',
     'nav_projects' => 'Andre prosjekter',
+    'nav_explorers' => 'Faglige utforskere',
     'nav_notes' => 'Notater',
     'nav_ai_skills' => 'AI-skills',
     'nav_ai_skills_aria' => 'Utforsk AI-skills hos Agensi',
@@ -138,7 +139,12 @@ $uiByLanguage = [
     'language_flag' => '🇬🇧',
     'hero_aria' => 'Forside',
     'hero_primary' => 'Se utvalget',
-    'hero_secondary' => 'Se flere sider',
+    'hero_secondary' => 'Utforsk forskningen',
+    'explorers_title' => 'Tallene, forskningen og forklaringene',
+    'explorers_lead' => 'Tre utforskere om ADHD, autisme og skole. Interaktive figurer, kilder og analyser gir deg mulighet til å undersøke påstandene selv.',
+    'explorers_badge' => 'Faglig fordypning',
+    'explorers_open' => 'Åpne utforskeren',
+    'explorers_language_note' => 'Utforskerne er på norsk.',
     'hero_meta_aria' => 'Rask status',
     'aside_aria' => 'Høyrestilt oversikt',
     'aside_kicker' => 'Raskt overblikk',
@@ -167,6 +173,7 @@ $uiByLanguage = [
     'topnav_aria' => 'Main navigation',
     'nav_popular' => 'Most used',
     'nav_projects' => 'Other projects',
+    'nav_explorers' => 'Research explorers',
     'nav_notes' => 'Notes',
     'nav_ai_skills' => 'AI skills',
     'nav_ai_skills_aria' => 'Explore AI skills at Agensi',
@@ -174,7 +181,12 @@ $uiByLanguage = [
     'language_flag' => '🇳🇴',
     'hero_aria' => 'Home page',
     'hero_primary' => 'See the selection',
-    'hero_secondary' => 'See more pages',
+    'hero_secondary' => 'Explore the research',
+    'explorers_title' => 'The data, the research and the explanations',
+    'explorers_lead' => 'Three explorers covering ADHD, autism and education. Interactive charts, sources and analyses let you examine the claims for yourself.',
+    'explorers_badge' => 'Research and analysis',
+    'explorers_open' => 'Open explorer',
+    'explorers_language_note' => 'The explorers are in Norwegian.',
     'hero_meta_aria' => 'Quick facts',
     'aside_aria' => 'Quick overview',
     'aside_kicker' => 'At a glance',
@@ -201,6 +213,7 @@ $site = $content['site'] ?? [];
 $hero = $content['hero'] ?? [];
 $heroMeta = $content['hero_meta'] ?? [];
 $mainCards = $content['main_cards'] ?? [];
+$explorerCards = $content['explorer_cards'] ?? [];
 $secondaryCards = $content['secondary_cards'] ?? [];
 $notesCards = $content['notes_cards'] ?? [];
 $heroPopularCards = array_slice($mainCards, 0, 5);
@@ -279,6 +292,7 @@ if ($siteEntityUrl !== '') {
     'about' => [
       '@id' => $siteEntityUrl . '#organization',
     ],
+    'relatedLink' => array_values(array_column($explorerCards, 'href')),
     'primaryImageOfPage' => [
       '@type' => 'ImageObject',
       'url' => $siteOgImage,
@@ -890,6 +904,7 @@ if ($siteEntityUrl !== '') {
 
     .card-top {
       display: flex;
+      flex-wrap: wrap;
       justify-content: space-between;
       gap: 10px;
       align-items: center;
@@ -912,6 +927,7 @@ if ($siteEntityUrl !== '') {
     .path {
       font-family: ui-monospace, "SFMono-Regular", Menlo, Consolas, "Liberation Mono", monospace;
       color: rgba(15, 92, 81, 0.72);
+      overflow-wrap: anywhere;
     }
 
     .app-card h3 {
@@ -1066,6 +1082,7 @@ if ($siteEntityUrl !== '') {
       </a>
       <nav class="topnav">
         <a class="nav-link" href="#mest-brukt"><?= e($ui['nav_popular']) ?></a>
+        <a class="nav-link" href="#utforskere"><?= e($ui['nav_explorers']) ?></a>
         <a class="nav-link" href="#andre-prosjekter"><?= e($ui['nav_projects']) ?></a>
         <a class="nav-link" href="#fotnoter"><?= e($ui['nav_notes']) ?></a>
         <a class="nav-link ai-skills-link" href="https://www.agensi.io/r/ROLFMBLINDGREN" target="_blank" rel="sponsored noopener noreferrer" aria-label="<?= e($ui['nav_ai_skills_aria']) ?>"><?= e($ui['nav_ai_skills']) ?></a>
@@ -1089,7 +1106,7 @@ if ($siteEntityUrl !== '') {
               </p>
               <div class="hero-actions">
                 <a class="button primary" href="#mest-brukt"><?= e($ui['hero_primary']) ?></a>
-                <a class="button secondary" href="#andre-prosjekter"><?= e($ui['hero_secondary']) ?></a>
+                <a class="button secondary" href="#utforskere"><?= e($ui['hero_secondary']) ?></a>
               </div>
               <div class="hero-meta" aria-label="<?= e($ui['hero_meta_aria']) ?>">
                 <?php foreach ($heroMeta as $chip): ?>
@@ -1153,6 +1170,28 @@ if ($siteEntityUrl !== '') {
         <div class="app-grid">
           <?php foreach ($mainCards as $card) {
             renderMainCard($card, $ui);
+          } ?>
+        </div>
+      </section>
+
+      <section class="section" id="utforskere">
+        <div class="section-head">
+          <div>
+            <h2><?= e($ui['explorers_title']) ?></h2>
+            <p><?= e($ui['explorers_lead']) ?></p>
+            <?php if ($language === 'en') : ?>
+              <p><?= e($ui['explorers_language_note']) ?></p>
+            <?php endif; ?>
+          </div>
+          <span class="badge"><?= e($ui['explorers_badge']) ?></span>
+        </div>
+
+        <div class="app-grid">
+          <?php foreach ($explorerCards as $card) {
+            renderMainCard($card, array_replace($ui, [
+              'recommended' => $ui['explorers_badge'],
+              'open_app' => $ui['explorers_open'],
+            ]));
           } ?>
         </div>
       </section>
