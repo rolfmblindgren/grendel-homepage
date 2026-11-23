@@ -121,6 +121,41 @@
       ]
     }
   ],
+  "explorer_cards": [
+    {
+      "href": "https://adhd.grendel.no/",
+      "path": "adhd.grendel.no",
+      "title": "ADHD-utforskeren",
+      "description": "Hvorfor får flere en ADHD-diagnose, og hva vet vi om behandlingen? Utforsk forskning og norske tall, og undersøk forklaringene bak overskriftene.",
+      "meta": [
+        "Diagnoser",
+        "Behandling",
+        "Mediedebatt"
+      ]
+    },
+    {
+      "href": "https://autisme.grendel.no/",
+      "path": "autisme.grendel.no",
+      "title": "Autisme-utforskeren",
+      "description": "Flere får en autismediagnose. Hva er det som øker? Følg norske registertall, undersøk hvem som får diagnosen, og sammenlign fem mulige forklaringer.",
+      "meta": [
+        "Registertall",
+        "Diagnoseutvikling",
+        "Fem hypoteser"
+      ]
+    },
+    {
+      "href": "https://pisa.grendel.no/",
+      "path": "pisa.grendel.no",
+      "title": "PISA-utforskeren",
+      "description": "Hva kan norske 15-åringer, og hvordan har det endret seg? Utforsk lesing, matematikk og naturfag, sammenlign land og prøv forklaringene mot tallene.",
+      "meta": [
+        "Skole og læring",
+        "Landssammenligninger",
+        "Kritiske analyser"
+      ]
+    }
+  ],
   "secondary_cards": [
     {
       "href": "https://cran.r-project.org/package=shinyseo",
@@ -199,6 +234,35 @@
         { "title": "Cover letters with actual content", "description": "A modular wizard that helps you write a concrete cover letter instead of assembling empty phrases.", "meta": ["CV + job ad", "AI-assisted", "Document draft"] },
         { "title": "Utility calculator", "description": "Calculates the utility of selection methods in recruitment and makes the underlying formula easier to understand.", "meta": ["Selection", "Recruitment", "Educational"] },
         { "title": "Autism questionnaire", "description": "A brief self-report measure of traits and experiences that may be relevant. Not a diagnostic tool.", "meta": ["Self-report", "Not diagnostic", "Use with care"] }
+      ],
+      "explorer_cards": [
+        {
+          "title": "The ADHD explorer",
+          "description": "Why are more people receiving an ADHD diagnosis, and what do we know about treatment? Explore research and Norwegian data, and examine the explanations behind the headlines.",
+          "meta": [
+            "Diagnoses",
+            "Treatment",
+            "Media debate"
+          ]
+        },
+        {
+          "title": "The autism explorer",
+          "description": "More people are receiving an autism diagnosis. What is increasing? Explore Norwegian registry data, look at who receives a diagnosis, and compare five possible explanations.",
+          "meta": [
+            "Registry data",
+            "Diagnostic trends",
+            "Five hypotheses"
+          ]
+        },
+        {
+          "title": "The PISA explorer",
+          "description": "What do Norwegian 15-year-olds know, and how has that changed? Explore reading, mathematics and science, compare countries, and test the explanations against the data.",
+          "meta": [
+            "Schools and learning",
+            "Country comparisons",
+            "Critical analysis"
+          ]
+        }
       ],
       "secondary_cards": [
         { "title": "shinyseo", "description": "A small R package for SEO work, mainly for those with a particular interest. The link goes to CRAN." },
